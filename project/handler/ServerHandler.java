@@ -3,8 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphservice;
+package graphservice.handler;
 
+import graphservice.handler.Graph;
+import graphservice.exception.KeyNotFound;
+import graphservice.exception.ResourceInUse;
+import graphservice.exception.KeyAlreadyUsed;
+import graphservice.model.Aresta;
+import graphservice.model.Grafo;
+import graphservice.model.Vertice;
 import java.util.ArrayList;
 import org.apache.thrift.TException;
 import java.util.List;
@@ -22,6 +29,7 @@ public class ServerHandler implements Graph.Iface{
     private static final long sleepTime = 1000;
     private static final int maxRetries = 10;
     private static final long waitToProcess = 5000; // test of concurrency
+    private static final boolean testConcurrency = false; // test of concurrency
     
     private List<Integer> blockedVertices = new ArrayList<>();
 
@@ -36,12 +44,16 @@ public class ServerHandler implements Graph.Iface{
     }
     
     public void blockVertice(int nome){
-        System.out.println("Blocked vertice " + nome);
+        if(testConcurrency){
+            System.out.println("!!! Blocked vertice " + nome);
+        }
         blockedVertices.add(nome);
     }
     
     public void unblockVertice(int nome){
-        System.out.println("Unblocked vertice " + nome);
+        if(testConcurrency){
+            System.out.println("!!! Unblocked vertice " + nome);
+        }
         blockedVertices.remove(new Integer(nome));
     }
     
@@ -53,7 +65,9 @@ public class ServerHandler implements Graph.Iface{
     public void verifyResourceVertice(int vertice) throws ResourceInUse{
         int retries = 0;
         while(isBlockedVertice(vertice) && retries < maxRetries){
-            System.out.println("Resource " + vertice + " being used");
+            if(testConcurrency){
+                System.out.println("Resource " + vertice + " being used");
+            }
             waitResource();
             retries++;
         }
@@ -61,7 +75,7 @@ public class ServerHandler implements Graph.Iface{
             throw new ResourceInUse(vertice);
         }
         blockVertice(vertice);
-        if(waitToProcess > 0){ // test of concurrency
+        if(testConcurrency){ // test of concurrency
             try {            
                 sleep(waitToProcess);
             } catch (InterruptedException ex) {
@@ -73,7 +87,9 @@ public class ServerHandler implements Graph.Iface{
     public void verifyResourceAresta(int vertice1, int vertice2) throws ResourceInUse{
         int retries = 0;
         while(isBlockedVertice(vertice1) && retries < maxRetries){
-            System.out.println("Resource " + vertice1 + " being used");
+            if(testConcurrency){
+                System.out.println("Resource " + vertice1 + " being used");
+            }
             waitResource();
             retries++;
         }
@@ -83,7 +99,9 @@ public class ServerHandler implements Graph.Iface{
         blockVertice(vertice1);
         retries = 0;
         while(isBlockedVertice(vertice2) && retries < maxRetries){
-            System.out.println("Resource " + vertice2 + " being used");
+            if(testConcurrency){
+                System.out.println("Resource " + vertice2 + " being used");
+            }
             waitResource();
             retries++;
         }
@@ -92,7 +110,7 @@ public class ServerHandler implements Graph.Iface{
             throw new ResourceInUse(vertice2);
         }
         blockVertice(vertice2);        
-        if(waitToProcess > 0){ // test of concurrency
+        if(testConcurrency){ // test of concurrency
             try {            
                 sleep(waitToProcess);
             } catch (InterruptedException ex) {

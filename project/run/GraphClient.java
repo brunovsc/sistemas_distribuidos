@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphservice;
+package graphservice.run;
 
+import graphservice.model.Aresta;
+import graphservice.handler.Graph;
+import graphservice.model.Vertice;
 import static java.lang.System.exit;
 import java.util.List;
 import java.util.Scanner;
@@ -54,7 +57,7 @@ public class GraphClient {
                     } catch (TException ex) {
                         System.out.println(ex);
                     }
-                    System.out.println("Encerrando cliente ... ");
+                    System.out.println("\nEncerrando cliente ... ");
                     try {
                         transport.close();
                     } catch (Exception e){
@@ -62,7 +65,7 @@ public class GraphClient {
                     exit(0);
                 }
                 else{
-                    System.out.println("Nao foi possivel estabelecer a conexao");
+                    System.out.println("\nNao foi possivel estabelecer a conexao");
                     exit(0);
                 }
 	}
@@ -316,6 +319,7 @@ public class GraphClient {
         }
         
         public static void printVertice(Vertice v){
+            System.out.println("");
             System.out.println("Nome: " + v.nome);
             System.out.println("Cor: " + v.cor);
             System.out.println("Peso: " + v.peso);
@@ -323,6 +327,7 @@ public class GraphClient {
         }        
         
         public static void printAresta(Aresta a){
+            System.out.println("");
             System.out.println("Vertice1: " + a.vertice1);
             System.out.println("Vertice2: " + a.vertice2);
             System.out.println("Peso: " + a.peso);
