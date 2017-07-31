@@ -1,0 +1,4 @@
+Initializing 1 servers
+Running java GraphServer 1 0 9090
+==== Opened ports: 
+----- 9090
