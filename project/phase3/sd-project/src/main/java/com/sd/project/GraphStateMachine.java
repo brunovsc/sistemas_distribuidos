@@ -182,6 +182,21 @@ public class GraphStateMachine extends StateMachine{
 		return true;
 	}
 	
+	public Object getClusterGraph(Commit<GetClusterGraph> commit){
+		commit.release();
+		return grafo;
+	}
+	
+	public Object getClusterVertices(Commit<GetClusterVertices> commit){
+		commit.release();
+		return grafo.vertices;
+	}
+	
+	public Object getClusterArestas(Commit<GetClusterArestas> commit){
+		commit.release();
+		return grafo.arestas;
+	}
+	
 	public Vertice findVertice( int vertice){
         for(Vertice v: grafo.vertices){
             if(v.id == vertice){
@@ -420,5 +435,11 @@ class UpdateAresta implements Command<Object>{
 		return direcionado;
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////// Querys
+class GetClusterGraph implements Query<Object>{}
+class GetClusterVertices implements Query<Object>{}
+class GetClusterArestas implements Query<Object>{}
+
 
 

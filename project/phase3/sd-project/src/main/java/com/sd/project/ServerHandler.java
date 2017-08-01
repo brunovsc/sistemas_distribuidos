@@ -102,6 +102,9 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[0].serializer().register(ReadAresta.class);
 		copycatClients[0].serializer().register(UpdateAresta.class);
 		copycatClients[0].serializer().register(DeleteAresta.class);
+		copycatClients[0].serializer().register(GetClusterGraph.class);
+		copycatClients[0].serializer().register(GetClusterVertices.class);
+		copycatClients[0].serializer().register(GetClusterArestas.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 1");
 		Collection<Address> cluster1 = Arrays.asList(
@@ -125,6 +128,9 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[1].serializer().register(ReadAresta.class);
 		copycatClients[1].serializer().register(UpdateAresta.class);
 		copycatClients[1].serializer().register(DeleteAresta.class);
+		copycatClients[1].serializer().register(GetClusterGraph.class);
+		copycatClients[1].serializer().register(GetClusterVertices.class);
+		copycatClients[1].serializer().register(GetClusterArestas.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 2");
 		Collection<Address> cluster2 = Arrays.asList(
@@ -148,6 +154,9 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[2].serializer().register(ReadAresta.class);
 		copycatClients[2].serializer().register(UpdateAresta.class);
 		copycatClients[2].serializer().register(DeleteAresta.class);
+		copycatClients[2].serializer().register(GetClusterGraph.class);
+		copycatClients[2].serializer().register(GetClusterVertices.class);
+		copycatClients[2].serializer().register(GetClusterArestas.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 3");
 		Collection<Address> cluster3 = Arrays.asList(
@@ -311,7 +320,7 @@ public class ServerHandler implements Graph.Iface{
             throw new KeyNotFound(key, "Vertice nao encontrado");
     	}
     	
-    	for(int i = 0; i < N; i++) { 
+    	for(int i = 0; i < 3; i++) { 
 			CompletableFuture<Object> future1 = copycatClients[i].submit(new DeleteArestasFromVertice(key));
 			Object result1 = future1.join();
 			boolean p = (boolean)result1;
@@ -495,7 +504,7 @@ public class ServerHandler implements Graph.Iface{
     
     @Override
     public List<Vertice> listVerticesFromAresta(int pessoa1, int pessoa2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
-    /*
+
     	if(pessoa1 == pessoa2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
@@ -503,17 +512,23 @@ public class ServerHandler implements Graph.Iface{
         logForOperation(9);
 
         Grafo fullGraph = getFullGraph();
-        Aresta aresta = findAresta(fullGraph, pessoa1, pessoa2);
+        Aresta aresta = null;
+        for(Aresta arest: fullGraph.arestas){
+        	if(((arest.pessoa1 == pessoa1) && (arest.pessoa2 == pessoa2)) || ((arest.pessoa1 == pessoa2) && (arest.pessoa2 == pessoa1))){
+        		aresta = arest;
+        		break;
+        	}
+        }
         if(aresta == null){
             unblockAresta(pessoa1, pessoa2);
             throw new KeyNotFound(0, "Aresta nao encontrada");
         }
-        Vertice v1 = findVertice(fullGraph, pessoa1);
+        Vertice v1 = findVertice(pessoa1);
         if(v1 == null){
             unblockAresta(pessoa1, pessoa2);
             throw new KeyNotFound(pessoa1, "Vertice nao encontrado");            
         }
-        Vertice v2 = findVertice(fullGraph, pessoa2);
+        Vertice v2 = findVertice(pessoa2);
         if(v2 == null){
             unblockAresta(pessoa1, pessoa2);
             throw new KeyNotFound(pessoa2, "Vertice nao encontrado");            
@@ -523,88 +538,90 @@ public class ServerHandler implements Graph.Iface{
         vertices.add(v1);
         vertices.add(v2);
         unblockAresta(pessoa1, pessoa2);
-        return vertices; */
-        return null;
+        return vertices;
     }
 
     @Override
-    public List<Aresta> listArestasFromVertice(int nome) throws KeyNotFound, ResourceInUse, TException {
-    /*
-        verifyResourceVertice(nome);
+    public List<Aresta> listArestasFromVertice(int id) throws KeyNotFound, ResourceInUse, TException {
+    
+        verifyResourceVertice(id);
         logForOperation(10);
         Grafo fullGraph = getFullGraph();
         
-        Vertice v = findVertice(fullGraph, nome);
+        Vertice v = null;
+        for(Vertice vert: fullGraph.vertices){
+        	if(vert.id == id){
+        		v = vert;
+        		break;
+        	}
+        }
         if(v == null){
-            unblockVertice(nome);
-            throw new KeyNotFound(nome, "Vertice nao encontrado");
+            unblockVertice(id);
+            throw new KeyNotFound(id, "Vertice nao encontrado");
         }
         List<Aresta> arestas = new ArrayList<Aresta>();
         for(Aresta aresta: fullGraph.arestas){
-            if(aresta.pessoa1 == nome || aresta.pessoa2 == nome){
+            if(aresta.pessoa1 == id || aresta.pessoa2 == id){
                 arestas.add(aresta);
             }
         }
-        unblockVertice(nome);
-        return arestas;*/
-        return null;
+        unblockVertice(id);
+        return arestas;
     }
 
     @Override
-    public List<Vertice> listNeighbors(int nome) throws KeyNotFound, ResourceInUse, TException {
-    /*
-        verifyResourceVertice(nome);
+    public List<Vertice> listNeighbors(int id) throws KeyNotFound, ResourceInUse, TException {
+    
+        verifyResourceVertice(id);
         logForOperation(11);
         Grafo fullGraph = getFullGraph();
         
-        Vertice v = findVertice(fullGraph, nome);
+        Vertice v = null;
+        for(Vertice vert: fullGraph.vertices){
+        	if(vert.id == id){
+        		v = vert;
+        		break;
+        	}
+        }
         if(v == null){
-            unblockVertice(nome);
-            throw new KeyNotFound(nome, "Vertice nao encontrado");
+            unblockVertice(id);
+            throw new KeyNotFound(id, "Vertice nao encontrado");
         }
         
         List<Integer> neighbors = new ArrayList<Integer>();
         for(Aresta aresta: fullGraph.arestas){
-            if(aresta.pessoa1 == nome){
+            if(aresta.pessoa1 == id){
                 neighbors.add(aresta.pessoa2);
             }            
             else{
-                if(aresta.pessoa2 == nome && !aresta.direcionado){
+                if(aresta.pessoa2 == id && !aresta.direcionado){
                     neighbors.add(aresta.pessoa1);
                 }
             }
         }
         List<Vertice> vertices = new ArrayList<Vertice>();
         for(Vertice vertice: fullGraph.vertices){
-            if(neighbors.contains(vertice.nome)){
+            if(neighbors.contains(vertice.id)){
                 vertices.add(vertice);
             }
         }
-        unblockVertice(nome);
-        return vertices;*/
-        return null;
+        unblockVertice(id);
+        return vertices;
     }
 
     @Override
     public List<Vertice> listVertices(){
-    /*
+
         logForOperation(12);
-        ArrayList<Vertice> allVertices = new ArrayList<Vertice>();
-        for(int i = 0; i < N; i++){
-            if(i != selfId){
-                try{
-                    System.out.println("Requesting vertices from " + ports[i]);
-                    allVertices.addAll(clients[i].listSelfVertices());
-                } catch(TException e){
-                    System.out.println("Failed to request vertices from " + ports[i]);
-                }
-            }
-            else{
-            	allVertices.addAll(grafo.vertices);
-            }
+        ArrayList<Vertice> vertices = new ArrayList<Vertice>();
+        for(int i = 0; i < 3; i++){
+		    CompletableFuture<Object> future = copycatClients[i].submit(new GetClusterVertices());
+		    Object result = future.join();
+		    ArrayList<Vertice> aux = (ArrayList<Vertice>)result;
+		    vertices.addAll(aux);
         }
-        return allVertices;*/
-        return null;
+        showVertices(vertices);
+        return vertices;
     }
     
     @Override
@@ -619,23 +636,16 @@ public class ServerHandler implements Graph.Iface{
     
     @Override
     public List<Aresta> listArestas(){
-        /*logForOperation(13);
-        ArrayList<Aresta> allArestas = new ArrayList<Aresta>();
-        for(int i = 0; i < N; i++){
-            if(i != selfId){
-                try{
-                    System.out.println("Requesting arestas from " + ports[i]);
-                    allArestas.addAll(clients[i].listSelfArestas());
-                } catch(TException e){
-                    System.out.println("Failed to request arestas from " + ports[i]);
-                }
-            }
-            else{
-       			allArestas.addAll(grafo.arestas);
-            }
+        logForOperation(13);
+        ArrayList<Aresta> arestas = new ArrayList<Aresta>();
+        for(int i = 0; i < 3; i++){
+		    CompletableFuture<Object> future = copycatClients[i].submit(new GetClusterArestas());
+		    Object result = future.join();
+		    ArrayList<Aresta> aux = (ArrayList<Aresta>)result;
+		    arestas.addAll(aux);
         }
-        return allArestas;  */
-        return null;
+        showArestas(arestas);
+        return arestas;
     }
 
     @Override
@@ -649,18 +659,18 @@ public class ServerHandler implements Graph.Iface{
 
     @Override
     public List<Vertice> menorCaminho(int pessoa1, int pessoa2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
-    /*
+    
     	if(pessoa1 == pessoa2){
     		throw new BadParameter("Cannot calculate path from k to k.");
     	}
         logForOperation(16);
         Grafo fullGraph = getFullGraph();
         
-        Vertice v = findVertice(fullGraph, pessoa1);
+        Vertice v = findVertice(pessoa1);
 		if(v == null){
 			throw new KeyNotFound(pessoa1, "Vertice nao encontrado");
 		}
-        Vertice destino = findVertice(fullGraph, pessoa2);
+        Vertice destino = findVertice(pessoa2);
 		if(destino == null){
 			throw new KeyNotFound(pessoa2, "Vertice nao encontrado");
 		}
@@ -670,8 +680,7 @@ public class ServerHandler implements Graph.Iface{
         algoritmo.executa(v); 
 
         LinkedList<Vertice> caminho = algoritmo.getCaminho(destino);
-        return caminho;*/
-        return null;
+        return caminho;
     }
     
     
@@ -707,17 +716,12 @@ public class ServerHandler implements Graph.Iface{
         Grafo g = new Grafo();
         g.vertices = new ArrayList<Vertice>();
         g.arestas = new ArrayList<Aresta>();
-        for(int i = 0; i < N; i++){
-            if(i != selfId){                
-                try{
-                    g.vertices.addAll(clients[i].listSelfVertices());
-                    g.arestas.addAll(clients[i].listSelfArestas());
-                } catch(Exception e){}
-            }
-			else {	
-				g.vertices.addAll(grafo.vertices);
-				g.arestas.addAll(grafo.arestas);
-			}
+        for(int i = 0; i < 3; i++){
+		    CompletableFuture<Object> future = copycatClients[i].submit(new GetClusterGraph());
+		    Object result = future.join();
+		    Grafo aux = (Grafo)result;
+            g.vertices.addAll(aux.vertices);
+            g.arestas.addAll(aux.arestas);
         }
         showGrafo(g.vertices, g.arestas);
         return g;
