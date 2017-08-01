@@ -32,11 +32,12 @@ public class GraphStateMachine extends StateMachine{
     
 	public Object createVertice(Commit<CreateVertice> commit){
 		try{
-			int nome = (int)commit.operation().nome();
-			int cor = (int)commit.operation().cor();
-			double peso = (double)commit.operation().peso();
-			String descricao = (String)commit.operation().descricao();
-			Vertice v = new Vertice(nome, cor, peso, descricao);
+			int id = (int)commit.operation().id();
+			String nome = (String)commit.operation().nome();
+			int idade = (int)commit.operation().idade();
+			String cidade_atual = (String)commit.operation().cidade_atual();
+			String contato = (String)commit.operation().contato();
+			Vertice v = new Vertice(id, nome, idade, cidade_atual, contato);
         	grafo.addToVertices(v);
         	System.out.println("-- Create Vertice");
 		} catch(Exception e){
@@ -88,8 +89,8 @@ public class GraphStateMachine extends StateMachine{
 	public Object readVertice(Commit<ReadVertice> commit){
 		Vertice v = null;
 		try{
-			int nome = (int)commit.operation().nome();
-			v = findVertice( nome);
+			int id = (int)commit.operation().id();
+			v = findVertice(id);
         	System.out.println("-- Read Vertice");
 		} catch(Exception e) {
 		
@@ -133,16 +134,16 @@ public class GraphStateMachine extends StateMachine{
 	
 	public Vertice findVertice( int vertice){
         for(Vertice v: grafo.vertices){
-            if(v.nome == vertice){
+            if(v.id == vertice){
                 return v;
             }
         }
         return null;
     }
     
-    public Aresta findAresta( int vertice1, int vertice2){
+    public Aresta findAresta( int pessoa1, int pessoa2){
         for(Aresta a : grafo.arestas){
-            if((a.vertice1 == vertice1 && a.vertice2 == vertice2) || (a.vertice1 == vertice2 && a.vertice2 == vertice1)){
+            if((a.pessoa1 == pessoa1 && a.pessoa2 == pessoa2) || (a.pessoa1 == pessoa2 && a.pessoa2 == pessoa1)){
                return a;
             }
         }
@@ -165,44 +166,50 @@ public class GraphStateMachine extends StateMachine{
 }
 
 class ReadVertice implements Query<Object>{
-	private final Object nome;
+	private final Object id;
 
-	public ReadVertice(Object nome){
-		this.nome = nome;
+	public ReadVertice(Object id){
+		this.id = id;
 	}
 	
-	public Object nome(){
-		return nome;
+	public Object id(){
+		return id;
 	}
 }
 
 class CreateVertice implements Command<Object>{
+	private final Object id;
 	private final Object nome;
-	private final Object cor;
-	private final Object peso;
-	private final Object descricao;
+	private final Object idade;
+	private final Object cidade_atual;
+	private final Object contato;
 	
-	public CreateVertice(Object nome, Object cor, Object peso, Object descricao){
+	public CreateVertice(Object id, Object nome, Object idade, Object cidade_atual, Object contato){
+		this.id = id;
 		this.nome = nome;
-		this.cor = cor;
-		this.peso = peso;
-		this.descricao = descricao;
+		this.idade = idade;
+		this.cidade_atual = cidade_atual;
+		this.contato = contato;
+	}
+	
+	public Object id(){
+		return id;
 	}
 	
 	public Object nome(){
 		return nome;
 	}
 	
-	public Object cor(){
-		return cor;
+	public Object idade(){
+		return idade;
 	}
 	
-	public Object peso(){
-		return peso;
+	public Object cidade_atual(){
+		return cidade_atual;
 	}
 	
-	public Object descricao(){
-		return descricao;
+	public Object contato(){
+		return contato;
 	}
 }
 
@@ -220,14 +227,14 @@ class CreateVertice implements Command<Object>{
 }*/
 
 class DeleteVertice implements Command<Object>{
-	private final Object nome;
+	private final Object id;
 
-	public DeleteVertice(Object nome){
-		this.nome = nome;
+	public DeleteVertice(Object id){
+		this.id = id;
 	}
 	
-	public Object nome(){
-		return nome;
+	public Object id(){
+		return id;
 	}
 }
 

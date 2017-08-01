@@ -35,10 +35,11 @@ import org.slf4j.LoggerFactory;
 public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields>, java.io.Serializable, Cloneable, Comparable<Vertice> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Vertice");
 
-  private static final org.apache.thrift.protocol.TField NOME_FIELD_DESC = new org.apache.thrift.protocol.TField("nome", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField COR_FIELD_DESC = new org.apache.thrift.protocol.TField("cor", org.apache.thrift.protocol.TType.I32, (short)2);
-  private static final org.apache.thrift.protocol.TField PESO_FIELD_DESC = new org.apache.thrift.protocol.TField("peso", org.apache.thrift.protocol.TType.DOUBLE, (short)3);
-  private static final org.apache.thrift.protocol.TField DESCRICAO_FIELD_DESC = new org.apache.thrift.protocol.TField("descricao", org.apache.thrift.protocol.TType.STRING, (short)4);
+  private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
+  private static final org.apache.thrift.protocol.TField NOME_FIELD_DESC = new org.apache.thrift.protocol.TField("nome", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField IDADE_FIELD_DESC = new org.apache.thrift.protocol.TField("idade", org.apache.thrift.protocol.TType.I32, (short)3);
+  private static final org.apache.thrift.protocol.TField CIDADE_ATUAL_FIELD_DESC = new org.apache.thrift.protocol.TField("cidade_atual", org.apache.thrift.protocol.TType.STRING, (short)4);
+  private static final org.apache.thrift.protocol.TField CONTATO_FIELD_DESC = new org.apache.thrift.protocol.TField("contato", org.apache.thrift.protocol.TType.STRING, (short)5);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -46,17 +47,19 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
     schemes.put(TupleScheme.class, new VerticeTupleSchemeFactory());
   }
 
-  public int nome; // required
-  public int cor; // required
-  public double peso; // required
-  public String descricao; // required
+  public int id; // required
+  public String nome; // required
+  public int idade; // required
+  public String cidade_atual; // required
+  public String contato; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    NOME((short)1, "nome"),
-    COR((short)2, "cor"),
-    PESO((short)3, "peso"),
-    DESCRICAO((short)4, "descricao");
+    ID((short)1, "id"),
+    NOME((short)2, "nome"),
+    IDADE((short)3, "idade"),
+    CIDADE_ATUAL((short)4, "cidade_atual"),
+    CONTATO((short)5, "contato");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -71,14 +74,16 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // NOME
+        case 1: // ID
+          return ID;
+        case 2: // NOME
           return NOME;
-        case 2: // COR
-          return COR;
-        case 3: // PESO
-          return PESO;
-        case 4: // DESCRICAO
-          return DESCRICAO;
+        case 3: // IDADE
+          return IDADE;
+        case 4: // CIDADE_ATUAL
+          return CIDADE_ATUAL;
+        case 5: // CONTATO
+          return CONTATO;
         default:
           return null;
       }
@@ -119,20 +124,21 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
   }
 
   // isset id assignments
-  private static final int __NOME_ISSET_ID = 0;
-  private static final int __COR_ISSET_ID = 1;
-  private static final int __PESO_ISSET_ID = 2;
+  private static final int __ID_ISSET_ID = 0;
+  private static final int __IDADE_ISSET_ID = 1;
   private byte __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.NOME, new org.apache.thrift.meta_data.FieldMetaData("nome", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.IDADE, new org.apache.thrift.meta_data.FieldMetaData("idade", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.COR, new org.apache.thrift.meta_data.FieldMetaData("cor", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.PESO, new org.apache.thrift.meta_data.FieldMetaData("peso", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
-    tmpMap.put(_Fields.DESCRICAO, new org.apache.thrift.meta_data.FieldMetaData("descricao", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.CIDADE_ATUAL, new org.apache.thrift.meta_data.FieldMetaData("cidade_atual", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.CONTATO, new org.apache.thrift.meta_data.FieldMetaData("contato", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Vertice.class, metaDataMap);
@@ -142,19 +148,20 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
   }
 
   public Vertice(
-    int nome,
-    int cor,
-    double peso,
-    String descricao)
+    int id,
+    String nome,
+    int idade,
+    String cidade_atual,
+    String contato)
   {
     this();
+    this.id = id;
+    setIdIsSet(true);
     this.nome = nome;
-    setNomeIsSet(true);
-    this.cor = cor;
-    setCorIsSet(true);
-    this.peso = peso;
-    setPesoIsSet(true);
-    this.descricao = descricao;
+    this.idade = idade;
+    setIdadeIsSet(true);
+    this.cidade_atual = cidade_atual;
+    this.contato = contato;
   }
 
   /**
@@ -162,11 +169,16 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
    */
   public Vertice(Vertice other) {
     __isset_bitfield = other.__isset_bitfield;
-    this.nome = other.nome;
-    this.cor = other.cor;
-    this.peso = other.peso;
-    if (other.isSetDescricao()) {
-      this.descricao = other.descricao;
+    this.id = other.id;
+    if (other.isSetNome()) {
+      this.nome = other.nome;
+    }
+    this.idade = other.idade;
+    if (other.isSetCidade_atual()) {
+      this.cidade_atual = other.cidade_atual;
+    }
+    if (other.isSetContato()) {
+      this.contato = other.contato;
     }
   }
 
@@ -176,139 +188,172 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
 
   @Override
   public void clear() {
-    setNomeIsSet(false);
-    this.nome = 0;
-    setCorIsSet(false);
-    this.cor = 0;
-    setPesoIsSet(false);
-    this.peso = 0.0;
-    this.descricao = null;
+    setIdIsSet(false);
+    this.id = 0;
+    this.nome = null;
+    setIdadeIsSet(false);
+    this.idade = 0;
+    this.cidade_atual = null;
+    this.contato = null;
   }
 
-  public int getNome() {
+  public int getId() {
+    return this.id;
+  }
+
+  public Vertice setId(int id) {
+    this.id = id;
+    setIdIsSet(true);
+    return this;
+  }
+
+  public void unsetId() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ID_ISSET_ID);
+  }
+
+  /** Returns true if field id is set (has been assigned a value) and false otherwise */
+  public boolean isSetId() {
+    return EncodingUtils.testBit(__isset_bitfield, __ID_ISSET_ID);
+  }
+
+  public void setIdIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ID_ISSET_ID, value);
+  }
+
+  public String getNome() {
     return this.nome;
   }
 
-  public Vertice setNome(int nome) {
+  public Vertice setNome(String nome) {
     this.nome = nome;
-    setNomeIsSet(true);
     return this;
   }
 
   public void unsetNome() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __NOME_ISSET_ID);
+    this.nome = null;
   }
 
   /** Returns true if field nome is set (has been assigned a value) and false otherwise */
   public boolean isSetNome() {
-    return EncodingUtils.testBit(__isset_bitfield, __NOME_ISSET_ID);
+    return this.nome != null;
   }
 
   public void setNomeIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __NOME_ISSET_ID, value);
-  }
-
-  public int getCor() {
-    return this.cor;
-  }
-
-  public Vertice setCor(int cor) {
-    this.cor = cor;
-    setCorIsSet(true);
-    return this;
-  }
-
-  public void unsetCor() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __COR_ISSET_ID);
-  }
-
-  /** Returns true if field cor is set (has been assigned a value) and false otherwise */
-  public boolean isSetCor() {
-    return EncodingUtils.testBit(__isset_bitfield, __COR_ISSET_ID);
-  }
-
-  public void setCorIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __COR_ISSET_ID, value);
-  }
-
-  public double getPeso() {
-    return this.peso;
-  }
-
-  public Vertice setPeso(double peso) {
-    this.peso = peso;
-    setPesoIsSet(true);
-    return this;
-  }
-
-  public void unsetPeso() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PESO_ISSET_ID);
-  }
-
-  /** Returns true if field peso is set (has been assigned a value) and false otherwise */
-  public boolean isSetPeso() {
-    return EncodingUtils.testBit(__isset_bitfield, __PESO_ISSET_ID);
-  }
-
-  public void setPesoIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PESO_ISSET_ID, value);
-  }
-
-  public String getDescricao() {
-    return this.descricao;
-  }
-
-  public Vertice setDescricao(String descricao) {
-    this.descricao = descricao;
-    return this;
-  }
-
-  public void unsetDescricao() {
-    this.descricao = null;
-  }
-
-  /** Returns true if field descricao is set (has been assigned a value) and false otherwise */
-  public boolean isSetDescricao() {
-    return this.descricao != null;
-  }
-
-  public void setDescricaoIsSet(boolean value) {
     if (!value) {
-      this.descricao = null;
+      this.nome = null;
+    }
+  }
+
+  public int getIdade() {
+    return this.idade;
+  }
+
+  public Vertice setIdade(int idade) {
+    this.idade = idade;
+    setIdadeIsSet(true);
+    return this;
+  }
+
+  public void unsetIdade() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __IDADE_ISSET_ID);
+  }
+
+  /** Returns true if field idade is set (has been assigned a value) and false otherwise */
+  public boolean isSetIdade() {
+    return EncodingUtils.testBit(__isset_bitfield, __IDADE_ISSET_ID);
+  }
+
+  public void setIdadeIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __IDADE_ISSET_ID, value);
+  }
+
+  public String getCidade_atual() {
+    return this.cidade_atual;
+  }
+
+  public Vertice setCidade_atual(String cidade_atual) {
+    this.cidade_atual = cidade_atual;
+    return this;
+  }
+
+  public void unsetCidade_atual() {
+    this.cidade_atual = null;
+  }
+
+  /** Returns true if field cidade_atual is set (has been assigned a value) and false otherwise */
+  public boolean isSetCidade_atual() {
+    return this.cidade_atual != null;
+  }
+
+  public void setCidade_atualIsSet(boolean value) {
+    if (!value) {
+      this.cidade_atual = null;
+    }
+  }
+
+  public String getContato() {
+    return this.contato;
+  }
+
+  public Vertice setContato(String contato) {
+    this.contato = contato;
+    return this;
+  }
+
+  public void unsetContato() {
+    this.contato = null;
+  }
+
+  /** Returns true if field contato is set (has been assigned a value) and false otherwise */
+  public boolean isSetContato() {
+    return this.contato != null;
+  }
+
+  public void setContatoIsSet(boolean value) {
+    if (!value) {
+      this.contato = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
+    case ID:
+      if (value == null) {
+        unsetId();
+      } else {
+        setId((Integer)value);
+      }
+      break;
+
     case NOME:
       if (value == null) {
         unsetNome();
       } else {
-        setNome((Integer)value);
+        setNome((String)value);
       }
       break;
 
-    case COR:
+    case IDADE:
       if (value == null) {
-        unsetCor();
+        unsetIdade();
       } else {
-        setCor((Integer)value);
+        setIdade((Integer)value);
       }
       break;
 
-    case PESO:
+    case CIDADE_ATUAL:
       if (value == null) {
-        unsetPeso();
+        unsetCidade_atual();
       } else {
-        setPeso((Double)value);
+        setCidade_atual((String)value);
       }
       break;
 
-    case DESCRICAO:
+    case CONTATO:
       if (value == null) {
-        unsetDescricao();
+        unsetContato();
       } else {
-        setDescricao((String)value);
+        setContato((String)value);
       }
       break;
 
@@ -317,17 +362,20 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
+    case ID:
+      return Integer.valueOf(getId());
+
     case NOME:
-      return Integer.valueOf(getNome());
+      return getNome();
 
-    case COR:
-      return Integer.valueOf(getCor());
+    case IDADE:
+      return Integer.valueOf(getIdade());
 
-    case PESO:
-      return Double.valueOf(getPeso());
+    case CIDADE_ATUAL:
+      return getCidade_atual();
 
-    case DESCRICAO:
-      return getDescricao();
+    case CONTATO:
+      return getContato();
 
     }
     throw new IllegalStateException();
@@ -340,14 +388,16 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
     }
 
     switch (field) {
+    case ID:
+      return isSetId();
     case NOME:
       return isSetNome();
-    case COR:
-      return isSetCor();
-    case PESO:
-      return isSetPeso();
-    case DESCRICAO:
-      return isSetDescricao();
+    case IDADE:
+      return isSetIdade();
+    case CIDADE_ATUAL:
+      return isSetCidade_atual();
+    case CONTATO:
+      return isSetContato();
     }
     throw new IllegalStateException();
   }
@@ -365,39 +415,48 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
     if (that == null)
       return false;
 
-    boolean this_present_nome = true;
-    boolean that_present_nome = true;
+    boolean this_present_id = true;
+    boolean that_present_id = true;
+    if (this_present_id || that_present_id) {
+      if (!(this_present_id && that_present_id))
+        return false;
+      if (this.id != that.id)
+        return false;
+    }
+
+    boolean this_present_nome = true && this.isSetNome();
+    boolean that_present_nome = true && that.isSetNome();
     if (this_present_nome || that_present_nome) {
       if (!(this_present_nome && that_present_nome))
         return false;
-      if (this.nome != that.nome)
+      if (!this.nome.equals(that.nome))
         return false;
     }
 
-    boolean this_present_cor = true;
-    boolean that_present_cor = true;
-    if (this_present_cor || that_present_cor) {
-      if (!(this_present_cor && that_present_cor))
+    boolean this_present_idade = true;
+    boolean that_present_idade = true;
+    if (this_present_idade || that_present_idade) {
+      if (!(this_present_idade && that_present_idade))
         return false;
-      if (this.cor != that.cor)
-        return false;
-    }
-
-    boolean this_present_peso = true;
-    boolean that_present_peso = true;
-    if (this_present_peso || that_present_peso) {
-      if (!(this_present_peso && that_present_peso))
-        return false;
-      if (this.peso != that.peso)
+      if (this.idade != that.idade)
         return false;
     }
 
-    boolean this_present_descricao = true && this.isSetDescricao();
-    boolean that_present_descricao = true && that.isSetDescricao();
-    if (this_present_descricao || that_present_descricao) {
-      if (!(this_present_descricao && that_present_descricao))
+    boolean this_present_cidade_atual = true && this.isSetCidade_atual();
+    boolean that_present_cidade_atual = true && that.isSetCidade_atual();
+    if (this_present_cidade_atual || that_present_cidade_atual) {
+      if (!(this_present_cidade_atual && that_present_cidade_atual))
         return false;
-      if (!this.descricao.equals(that.descricao))
+      if (!this.cidade_atual.equals(that.cidade_atual))
+        return false;
+    }
+
+    boolean this_present_contato = true && this.isSetContato();
+    boolean that_present_contato = true && that.isSetContato();
+    if (this_present_contato || that_present_contato) {
+      if (!(this_present_contato && that_present_contato))
+        return false;
+      if (!this.contato.equals(that.contato))
         return false;
     }
 
@@ -417,6 +476,16 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
 
     int lastComparison = 0;
 
+    lastComparison = Boolean.valueOf(isSetId()).compareTo(other.isSetId());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.id, other.id);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetNome()).compareTo(other.isSetNome());
     if (lastComparison != 0) {
       return lastComparison;
@@ -427,32 +496,32 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetCor()).compareTo(other.isSetCor());
+    lastComparison = Boolean.valueOf(isSetIdade()).compareTo(other.isSetIdade());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetCor()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.cor, other.cor);
+    if (isSetIdade()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.idade, other.idade);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetPeso()).compareTo(other.isSetPeso());
+    lastComparison = Boolean.valueOf(isSetCidade_atual()).compareTo(other.isSetCidade_atual());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetPeso()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.peso, other.peso);
+    if (isSetCidade_atual()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.cidade_atual, other.cidade_atual);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetDescricao()).compareTo(other.isSetDescricao());
+    lastComparison = Boolean.valueOf(isSetContato()).compareTo(other.isSetContato());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetDescricao()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.descricao, other.descricao);
+    if (isSetContato()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.contato, other.contato);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -477,23 +546,35 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
     StringBuilder sb = new StringBuilder("Vertice(");
     boolean first = true;
 
+    sb.append("id:");
+    sb.append(this.id);
+    first = false;
+    if (!first) sb.append(", ");
     sb.append("nome:");
-    sb.append(this.nome);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("cor:");
-    sb.append(this.cor);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("peso:");
-    sb.append(this.peso);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("descricao:");
-    if (this.descricao == null) {
+    if (this.nome == null) {
       sb.append("null");
     } else {
-      sb.append(this.descricao);
+      sb.append(this.nome);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("idade:");
+    sb.append(this.idade);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("cidade_atual:");
+    if (this.cidade_atual == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.cidade_atual);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("contato:");
+    if (this.contato == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.contato);
     }
     first = false;
     sb.append(")");
@@ -541,34 +622,42 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
           break;
         }
         switch (schemeField.id) {
-          case 1: // NOME
+          case 1: // ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.nome = iprot.readI32();
+              struct.id = iprot.readI32();
+              struct.setIdIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 2: // NOME
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.nome = iprot.readString();
               struct.setNomeIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // COR
+          case 3: // IDADE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.cor = iprot.readI32();
-              struct.setCorIsSet(true);
+              struct.idade = iprot.readI32();
+              struct.setIdadeIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // PESO
-            if (schemeField.type == org.apache.thrift.protocol.TType.DOUBLE) {
-              struct.peso = iprot.readDouble();
-              struct.setPesoIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 4: // DESCRICAO
+          case 4: // CIDADE_ATUAL
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.descricao = iprot.readString();
-              struct.setDescricaoIsSet(true);
+              struct.cidade_atual = iprot.readString();
+              struct.setCidade_atualIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 5: // CONTATO
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.contato = iprot.readString();
+              struct.setContatoIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -588,18 +677,25 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      oprot.writeFieldBegin(NOME_FIELD_DESC);
-      oprot.writeI32(struct.nome);
+      oprot.writeFieldBegin(ID_FIELD_DESC);
+      oprot.writeI32(struct.id);
       oprot.writeFieldEnd();
-      oprot.writeFieldBegin(COR_FIELD_DESC);
-      oprot.writeI32(struct.cor);
+      if (struct.nome != null) {
+        oprot.writeFieldBegin(NOME_FIELD_DESC);
+        oprot.writeString(struct.nome);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldBegin(IDADE_FIELD_DESC);
+      oprot.writeI32(struct.idade);
       oprot.writeFieldEnd();
-      oprot.writeFieldBegin(PESO_FIELD_DESC);
-      oprot.writeDouble(struct.peso);
-      oprot.writeFieldEnd();
-      if (struct.descricao != null) {
-        oprot.writeFieldBegin(DESCRICAO_FIELD_DESC);
-        oprot.writeString(struct.descricao);
+      if (struct.cidade_atual != null) {
+        oprot.writeFieldBegin(CIDADE_ATUAL_FIELD_DESC);
+        oprot.writeString(struct.cidade_atual);
+        oprot.writeFieldEnd();
+      }
+      if (struct.contato != null) {
+        oprot.writeFieldBegin(CONTATO_FIELD_DESC);
+        oprot.writeString(struct.contato);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -620,52 +716,62 @@ public class Vertice implements org.apache.thrift.TBase<Vertice, Vertice._Fields
     public void write(org.apache.thrift.protocol.TProtocol prot, Vertice struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetNome()) {
+      if (struct.isSetId()) {
         optionals.set(0);
       }
-      if (struct.isSetCor()) {
+      if (struct.isSetNome()) {
         optionals.set(1);
       }
-      if (struct.isSetPeso()) {
+      if (struct.isSetIdade()) {
         optionals.set(2);
       }
-      if (struct.isSetDescricao()) {
+      if (struct.isSetCidade_atual()) {
         optionals.set(3);
       }
-      oprot.writeBitSet(optionals, 4);
+      if (struct.isSetContato()) {
+        optionals.set(4);
+      }
+      oprot.writeBitSet(optionals, 5);
+      if (struct.isSetId()) {
+        oprot.writeI32(struct.id);
+      }
       if (struct.isSetNome()) {
-        oprot.writeI32(struct.nome);
+        oprot.writeString(struct.nome);
       }
-      if (struct.isSetCor()) {
-        oprot.writeI32(struct.cor);
+      if (struct.isSetIdade()) {
+        oprot.writeI32(struct.idade);
       }
-      if (struct.isSetPeso()) {
-        oprot.writeDouble(struct.peso);
+      if (struct.isSetCidade_atual()) {
+        oprot.writeString(struct.cidade_atual);
       }
-      if (struct.isSetDescricao()) {
-        oprot.writeString(struct.descricao);
+      if (struct.isSetContato()) {
+        oprot.writeString(struct.contato);
       }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, Vertice struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(4);
+      BitSet incoming = iprot.readBitSet(5);
       if (incoming.get(0)) {
-        struct.nome = iprot.readI32();
-        struct.setNomeIsSet(true);
+        struct.id = iprot.readI32();
+        struct.setIdIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.cor = iprot.readI32();
-        struct.setCorIsSet(true);
+        struct.nome = iprot.readString();
+        struct.setNomeIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.peso = iprot.readDouble();
-        struct.setPesoIsSet(true);
+        struct.idade = iprot.readI32();
+        struct.setIdadeIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.descricao = iprot.readString();
-        struct.setDescricaoIsSet(true);
+        struct.cidade_atual = iprot.readString();
+        struct.setCidade_atualIsSet(true);
+      }
+      if (incoming.get(4)) {
+        struct.contato = iprot.readString();
+        struct.setContatoIsSet(true);
       }
     }
   }

@@ -1,18 +1,19 @@
 namespace java graphservice
 
 struct Aresta {
-	1: i32 vertice1
-	2: i32 vertice2
-	3: double peso
+	1: i32 pessoa1
+	2: i32 pessoa2
+	3: double distancia
 	4: bool direcionado
 	5: string descricao
 }
 
 struct Vertice {
-	1: i32 nome
-	2: i32 cor
-	3: double peso
-	4: string descricao
+	1: i32 id
+	2: string nome
+	3: i32 idade
+	4: string cidade_atual
+	5: string contato
 }
 
 struct Grafo {
@@ -66,19 +67,19 @@ enum ServiceEnum {
 
 service Graph {
 
-	bool createVertice(1:i32 nome, 2:i32 cor, 3:double peso, 4:string descricao) throws (1:KeyAlreadyUsed kau, 2:ResourceInUse riu),
+	bool createVertice(1:i32 id, 2:string nome, 3:i32 idade, 4:string cidade_atual, 5:string contato) throws (1:KeyAlreadyUsed kau, 2:ResourceInUse riu),
 	bool deleteVertice(1:i32 key) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
-	bool updateVertice(1:i32 nome, 2:i32 cor, 3:double peso, 4:string descricao) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
+	bool updateVertice(1:i32 id, 2:string nome, 3:i32 idade, 4:string cidade_atual, 5:string contato) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
 	Vertice readVertice(1:i32 key) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
 
-	bool createAresta(1:i32 vertice1, 2:i32 vertice2, 3:double peso, 4:bool direcionado, 5:string descricao) throws (1:KeyAlreadyUsed kau, 2:ResourceInUse riu, 3:KeyNotFound knf, 4:BadParameter bp),
-	bool deleteAresta(1:i32 vertice1, 2:i32 vertice2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
-	bool updateAresta(1:i32 vertice1, 2:i32 vertice2, 3:double peso, 4:bool direcionado, 5:string descricao) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
-	Aresta readAresta(1:i32 vertice1, 2:i32 vertice2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
+	bool createAresta(1:i32 pessoa1, 2:i32 pessoa2, 3:double distancia, 4:bool direcionado, 5:string descricao) throws (1:KeyAlreadyUsed kau, 2:ResourceInUse riu, 3:KeyNotFound knf, 4:BadParameter bp),
+	bool deleteAresta(1:i32 pessoa1, 2:i32 pessoa2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
+	bool updateAresta(1:i32 pessoa1, 2:i32 pessoa2, 3:double distancia, 4:bool direcionado, 5:string descricao) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
+	Aresta readAresta(1:i32 pessoa1, 2:i32 pessoa2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
 
-	list<Vertice> listVerticesFromAresta(1:i32 vertice1, 2:i32 vertice2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
-	list<Aresta> listArestasFromVertice(1:i32 nome) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
-	list<Vertice> listNeighbors(1:i32 nome) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
+	list<Vertice> listVerticesFromAresta(1:i32 pessoa1, 2:i32 pessoa2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
+	list<Aresta> listArestasFromVertice(1:i32 id) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
+	list<Vertice> listNeighbors(1:i32 id) throws (1:KeyNotFound knf, 2:ResourceInUse riu),
 
         list<Vertice> listVertices(),
         list<Aresta> listArestas(),
@@ -86,9 +87,10 @@ service Graph {
         list<Vertice> listSelfVertices(),
         list<Aresta> listSelfArestas(),
 
-        list<Vertice> menorCaminho(1:i32 vertice1, 2:i32 vertice2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
+        list<Vertice> menorCaminho(1:i32 pessoa1, 2:i32 pessoa2) throws (1:KeyNotFound knf, 2:ResourceInUse riu, 3:BadParameter bp),
 
-	bool deleteArestasFromVertice(1:i32 vertice) throws (1:KeyNotFound knf, 2:ResourceInUse riu)
+	bool deleteArestasFromVertice(1:i32 pessoa) throws (1:KeyNotFound knf, 2:ResourceInUse riu)
 }
+
 
 

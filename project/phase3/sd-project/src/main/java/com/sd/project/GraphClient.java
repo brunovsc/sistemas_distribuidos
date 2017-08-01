@@ -10,6 +10,9 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.protocol.TBinaryProtocol;
 
+//import view.TelaMenu;
+//import view.*;
+
 public class GraphClient {
     
     private static TTransport transport;
@@ -41,15 +44,15 @@ public class GraphClient {
 	try{
 		int test = Integer.parseInt(args[1]);
 		try{
-			client.createVertice(1, 1, 1.0, "1");
-			client.createVertice(2, 2, 2.0, "2");
-			client.createVertice(3, 3, 3.0, "3");
-			client.createVertice(4, 4, 4.0, "4");
-			client.createVertice(5, 5, 5.0, "5");
-			client.createVertice(6, 6, 6.0, "6");
-			client.createVertice(7, 7, 7.0, "7");
-			client.createVertice(8, 8, 8.0, "8");
-			client.createVertice(9, 9, 9.0, "9");
+			client.createVertice(1, "a", 1, "cidade_a", "1");
+			client.createVertice(2, "b", 2, "cidade_b", "2");
+			client.createVertice(3, "c", 3, "cidade_c", "3");
+			client.createVertice(4, "d", 4, "cidade_d", "4");
+			client.createVertice(5, "e", 5, "cidade_e", "5");
+			client.createVertice(6, "f", 6, "cidade_f", "6");
+			client.createVertice(7, "g", 7, "cidade_g", "7");
+			client.createVertice(8, "h", 8, "cidade_h", "8");
+			client.createVertice(9, "i", 9, "cidade_i", "9");
 
 			client.createAresta(1, 2, 12, false, "12");
 			client.createAresta(1, 3, 13, false, "13");
@@ -72,7 +75,7 @@ public class GraphClient {
 		catch(Exception e){ System.out.println(e.toString()); }
 	}catch(Exception e){}
 
-
+	    //new TelaLogin(client);
             int op = -1;
             while(op != 0){
                 op = showMenu();
@@ -97,7 +100,7 @@ public class GraphClient {
             exit(0);
         }
         else{
-            System.out.println("\nNao foi possivel estabelecer a conexao !!!");
+            System.out.println("\nNao foi possivel estabelecer a conexao");
             exit(0);
         }
     }
@@ -121,10 +124,10 @@ public class GraphClient {
         String a;
         for(Aresta aresta: arestas){
             if(!aresta.direcionado){
-                a = "[" + aresta.vertice1 + ", " + aresta.vertice2 + "], ";   
+                a = "[" + aresta.pessoa1 + ", " + aresta.pessoa2 + "], ";   
             }
             else{
-                a = "(" + aresta.vertice1 + ", " + aresta.vertice2 + "), ";                     
+                a = "(" + aresta.pessoa1 + ", " + aresta.pessoa2 + "), ";                     
             }
             System.out.print(a);
         }
@@ -183,11 +186,12 @@ public class GraphClient {
         return op2;
     }
 
+
     public static void handleOperation(int op) throws TException{
-        int nome, cor, vertice1, vertice2;
-        double peso;
+        int id, idade, pessoa1, pessoa2;
+	String nome, contato, cidade_atual, descricao;
+        double distancia;
         boolean direcionado;
-        String descricao;
         Scanner in = new Scanner(System.in);
         boolean result;
         Vertice vertice;
@@ -198,60 +202,66 @@ public class GraphClient {
                 break;
             // Vertice
             case 11:
+                System.out.print("Id: ");
+                id = in.nextInt();
                 System.out.print("Nome: ");
-                nome = in.nextInt();
-                System.out.print("Cor: ");
-                cor = in.nextInt();
-                System.out.print("Peso: ");
-                peso = in.nextDouble();
-                System.out.print("Descricao: ");
                 in.nextLine();
-                descricao = in.nextLine();
+                nome = in.nextLine();
+                System.out.print("Idade: ");
+                idade = in.nextInt();
+                System.out.print("Cidade atual: ");
+                in.nextLine();
+                cidade_atual = in.nextLine();
+                System.out.print("Contato: ");
+                contato = in.nextLine();
 
-                if(client.createVertice(nome, cor, peso, descricao)){
+                if(client.createVertice(id, nome, idade, cidade_atual, contato)){
                     System.out.println("Vertice criado com sucesso");
                 }
                 break;
             case 12:
-                System.out.print("Nome: ");
-                nome = in.nextInt();
+                System.out.print("Id: ");
+                id = in.nextInt();
 
-                if(client.deleteVertice(nome)){
+                if(client.deleteVertice(id)){
                     System.out.println("Vertice removido com sucesso");
                 }
                 break;
             case 13:
+                System.out.print("Id: ");
+                id = in.nextInt();
                 System.out.print("Nome: ");
-                nome = in.nextInt();
-                System.out.print("Cor: ");
-                cor = in.nextInt();
-                System.out.print("Peso: ");
-                peso = in.nextDouble();
-                System.out.print("Descricao: ");
                 in.nextLine();
-                descricao = in.nextLine();
+                nome = in.nextLine();
+                System.out.print("Idade: ");
+                idade = in.nextInt();
+                System.out.print("Cidade atual: ");
+                in.nextLine();
+                cidade_atual = in.nextLine();
+                System.out.print("Contato: ");
+                contato = in.nextLine();
 
-                if(client.updateVertice(nome, cor, peso, descricao)){
+                if(client.updateVertice(id, nome, idade, cidade_atual, contato)){
                     System.out.println("Vertice atualizado com sucesso");                        
                 }
                 break;
             case 14:
-                System.out.print("Nome: ");
-                nome = in.nextInt();
+                System.out.print("Id: ");
+                id = in.nextInt();
 
-                Vertice v = client.readVertice(nome);
+                Vertice v = client.readVertice(id);
                 if(v != null){
                     printVertice(v);
                 }
                 break;
             // Aresta
             case 21:
-                System.out.print("Vertice 1: ");
-                vertice1 = in.nextInt();
-                System.out.print("Vertice 2: ");
-                vertice2 = in.nextInt();
-                System.out.print("Peso: ");
-                peso = in.nextDouble();
+                System.out.print("Pessoa 1: ");
+                pessoa1 = in.nextInt();
+                System.out.print("Pessoa 2: ");
+                pessoa2 = in.nextInt();
+                System.out.print("Distancia: ");
+                distancia = in.nextDouble();
                 System.out.println("Direcionado: ");
                 in.nextLine();
                 direcionado = in.nextBoolean();
@@ -259,56 +269,57 @@ public class GraphClient {
                 in.nextLine();
                 descricao = in.nextLine();
 
-                if(client.createAresta(vertice1, vertice2, peso, direcionado, descricao)){
+                if(client.createAresta(pessoa1, pessoa2, distancia, direcionado, descricao)){
                     System.out.println("Aresta criada com sucesso");                         
                 }
                 break;
             case 22:
-                System.out.print("Vertice 1: ");
-                vertice1 = in.nextInt();
-                System.out.print("Vertice 2: ");
-                vertice2 = in.nextInt();
+                System.out.print("Pessoa 1: ");
+                pessoa1 = in.nextInt();
+                System.out.print("Pessoa 2: ");
+                pessoa2 = in.nextInt();
 
-                if(client.deleteAresta(vertice1, vertice2)){
+                if(client.deleteAresta(pessoa1, pessoa2)){
                     System.out.println("Aresta removida com sucesso"); 
                 }
                 break;
             case 23:
-                System.out.print("Vertice 1: ");
-                vertice1 = in.nextInt();
-                System.out.print("Vertice 2: ");
-                vertice2 = in.nextInt();
-                System.out.print("Peso: ");
-                peso = in.nextDouble();
+                System.out.print("Pessoa 1: ");
+                pessoa1 = in.nextInt();
+                System.out.print("Pessoa 2: ");
+                pessoa2 = in.nextInt();
+                System.out.print("Distancia: ");
+                distancia = in.nextDouble();
                 System.out.println("Direcionado: ");
+                in.nextLine();
                 direcionado = in.nextBoolean();
                 System.out.print("Descricao: ");
                 in.nextLine();
                 descricao = in.nextLine();
 
-                if(client.updateAresta(vertice1, vertice2, peso, direcionado, descricao)){
+                if(client.createAresta(pessoa1, pessoa2, distancia, direcionado, descricao)){
                     System.out.println("Aresta atualizada com sucesso"); 
                 }
                 break;
             case 24:
-                System.out.print("Vertice 1: ");
-                vertice1 = in.nextInt();
-                System.out.print("Vertice 2: ");
-                vertice2 = in.nextInt();
+                System.out.print("Pessoa 1: ");
+                pessoa1 = in.nextInt();
+                System.out.print("Pessoa 2: ");
+                pessoa2 = in.nextInt();
 
-                Aresta a = client.readAresta(vertice1, vertice2);
+                Aresta a = client.readAresta(pessoa1, pessoa2);
                 if(a != null){
                     printAresta(a);
                 }
                 break;
             // Consulta
             case 31:
-                System.out.print("Vertice 1: ");
-                vertice1 = in.nextInt();
-                System.out.print("Vertice 2: ");
-                vertice2 = in.nextInt();
+                System.out.print("Pessoa 1: ");
+                pessoa1 = in.nextInt();
+                System.out.print("Pessoa 2: ");
+                pessoa2 = in.nextInt();
 
-                List<Vertice> vertices = client.listVerticesFromAresta(vertice1, vertice2);
+                List<Vertice> vertices = client.listVerticesFromAresta(pessoa1, pessoa2);
                 if(vertices != null){
                     for(Vertice vert:vertices){
                         printVertice(vert);
@@ -316,10 +327,10 @@ public class GraphClient {
                 }
                 break;
             case 32:
-                System.out.print("Nome: ");
-                nome = in.nextInt();
+                System.out.print("Id: ");
+                id = in.nextInt();
 
-                List<Aresta> arestas = client.listArestasFromVertice(nome);
+                List<Aresta> arestas = client.listArestasFromVertice(id);
                 if(arestas != null){
                     for(Aresta ares:arestas){
                         printAresta(ares);
@@ -327,10 +338,10 @@ public class GraphClient {
                 }
                 break;
             case 33:
-                System.out.print("Nome: ");
-                nome = in.nextInt();
+                System.out.print("Id: ");
+                id = in.nextInt();
 
-                List<Vertice> vizinhos = client.listNeighbors(nome);
+                List<Vertice> vizinhos = client.listNeighbors(id);
                 if(vizinhos != null){
                     for(Vertice vert:vizinhos){
                         printVertice(vert);
@@ -338,12 +349,12 @@ public class GraphClient {
                 }
                 break;
             case 34:
-                System.out.print("Vertice 1: ");
-                vertice1 = in.nextInt();
-                System.out.print("Vertice 2: ");
-                vertice2 = in.nextInt();
+                System.out.print("Pessoa 1: ");
+                pessoa1 = in.nextInt();
+                System.out.print("Pessoa 2: ");
+                pessoa2 = in.nextInt();
                 
-                List<Vertice> caminho = client.menorCaminho(vertice1, vertice2);
+                List<Vertice> caminho = client.menorCaminho(pessoa1, pessoa2);
                 if(caminho != null){
                     System.out.print("Caminho: ");
                     for(Vertice vert: caminho){
@@ -383,18 +394,20 @@ public class GraphClient {
 
     public static void printVertice(Vertice v){
         System.out.println("");
+        System.out.println("Id: " + v.id);
         System.out.println("Nome: " + v.nome);
-        System.out.println("Cor: " + v.cor);
-        System.out.println("Peso: " + v.peso);
-        System.out.println("Descricao: " + v.descricao);
+        System.out.println("Idade: " + v.idade);
+        System.out.println("Cidade Atual: " + v.cidade_atual);
+        System.out.println("Contato: " + v.contato);
     }        
 
     public static void printAresta(Aresta a){
         System.out.println("");
-        System.out.println("Vertice1: " + a.vertice1);
-        System.out.println("Vertice2: " + a.vertice2);
-        System.out.println("Peso: " + a.peso);
+        System.out.println("Pessoa 1: " + a.pessoa1);
+        System.out.println("Pessoa 2: " + a.pessoa2);
+        System.out.println("Distancia: " + a.distancia);
         System.out.println("Direcionado: " + a.direcionado);
         System.out.println("Descricao: " + a.descricao);
     }
 }
+

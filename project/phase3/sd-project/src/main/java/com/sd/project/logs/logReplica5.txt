@@ -1,4 +1,3 @@
 ===== Creating copycat server on port 5005
 ===== !!! Joining cluster on port  5003
-===== Created  copycat server on port 5005
 -- Create Vertice

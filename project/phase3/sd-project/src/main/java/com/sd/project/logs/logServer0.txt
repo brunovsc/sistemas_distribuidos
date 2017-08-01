@@ -3,10 +3,16 @@
 ===== Connecting Server Handler to Cluster 2
 ===== Connecting Server Handler to Cluster 3
 Cluster to process: 1
+----- OPERATION on port 9090 - Create Vertice
+Cluster to process: 1
 ----- OPERATION on port 9090 - Read Vertice
------ OPERATION on port 9090 - List Vertices
------ OPERATION on port 9090 - List Arestas
 Cluster to process: 0
 ----- OPERATION on port 9090 - Create Vertice
 Cluster to process: 0
 ----- OPERATION on port 9090 - Read Vertice
+Cluster to process: 1
+----- OPERATION on port 9090 - Read Vertice
+Cluster to process: 0
+----- OPERATION on port 9090 - Create Vertice
+----- OPERATION on port 9090 - List Vertices
+----- OPERATION on port 9090 - List Arestas

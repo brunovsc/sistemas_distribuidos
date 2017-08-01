@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, java.io.Serializable, Cloneable, Comparable<Aresta> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Aresta");
 
-  private static final org.apache.thrift.protocol.TField VERTICE1_FIELD_DESC = new org.apache.thrift.protocol.TField("vertice1", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField VERTICE2_FIELD_DESC = new org.apache.thrift.protocol.TField("vertice2", org.apache.thrift.protocol.TType.I32, (short)2);
-  private static final org.apache.thrift.protocol.TField PESO_FIELD_DESC = new org.apache.thrift.protocol.TField("peso", org.apache.thrift.protocol.TType.DOUBLE, (short)3);
+  private static final org.apache.thrift.protocol.TField PESSOA1_FIELD_DESC = new org.apache.thrift.protocol.TField("pessoa1", org.apache.thrift.protocol.TType.I32, (short)1);
+  private static final org.apache.thrift.protocol.TField PESSOA2_FIELD_DESC = new org.apache.thrift.protocol.TField("pessoa2", org.apache.thrift.protocol.TType.I32, (short)2);
+  private static final org.apache.thrift.protocol.TField DISTANCIA_FIELD_DESC = new org.apache.thrift.protocol.TField("distancia", org.apache.thrift.protocol.TType.DOUBLE, (short)3);
   private static final org.apache.thrift.protocol.TField DIRECIONADO_FIELD_DESC = new org.apache.thrift.protocol.TField("direcionado", org.apache.thrift.protocol.TType.BOOL, (short)4);
   private static final org.apache.thrift.protocol.TField DESCRICAO_FIELD_DESC = new org.apache.thrift.protocol.TField("descricao", org.apache.thrift.protocol.TType.STRING, (short)5);
 
@@ -47,17 +47,17 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
     schemes.put(TupleScheme.class, new ArestaTupleSchemeFactory());
   }
 
-  public int vertice1; // required
-  public int vertice2; // required
-  public double peso; // required
+  public int pessoa1; // required
+  public int pessoa2; // required
+  public double distancia; // required
   public boolean direcionado; // required
   public String descricao; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    VERTICE1((short)1, "vertice1"),
-    VERTICE2((short)2, "vertice2"),
-    PESO((short)3, "peso"),
+    PESSOA1((short)1, "pessoa1"),
+    PESSOA2((short)2, "pessoa2"),
+    DISTANCIA((short)3, "distancia"),
     DIRECIONADO((short)4, "direcionado"),
     DESCRICAO((short)5, "descricao");
 
@@ -74,12 +74,12 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // VERTICE1
-          return VERTICE1;
-        case 2: // VERTICE2
-          return VERTICE2;
-        case 3: // PESO
-          return PESO;
+        case 1: // PESSOA1
+          return PESSOA1;
+        case 2: // PESSOA2
+          return PESSOA2;
+        case 3: // DISTANCIA
+          return DISTANCIA;
         case 4: // DIRECIONADO
           return DIRECIONADO;
         case 5: // DESCRICAO
@@ -124,19 +124,19 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
   }
 
   // isset id assignments
-  private static final int __VERTICE1_ISSET_ID = 0;
-  private static final int __VERTICE2_ISSET_ID = 1;
-  private static final int __PESO_ISSET_ID = 2;
+  private static final int __PESSOA1_ISSET_ID = 0;
+  private static final int __PESSOA2_ISSET_ID = 1;
+  private static final int __DISTANCIA_ISSET_ID = 2;
   private static final int __DIRECIONADO_ISSET_ID = 3;
   private byte __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.VERTICE1, new org.apache.thrift.meta_data.FieldMetaData("vertice1", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PESSOA1, new org.apache.thrift.meta_data.FieldMetaData("pessoa1", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.VERTICE2, new org.apache.thrift.meta_data.FieldMetaData("vertice2", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PESSOA2, new org.apache.thrift.meta_data.FieldMetaData("pessoa2", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.PESO, new org.apache.thrift.meta_data.FieldMetaData("peso", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.DISTANCIA, new org.apache.thrift.meta_data.FieldMetaData("distancia", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     tmpMap.put(_Fields.DIRECIONADO, new org.apache.thrift.meta_data.FieldMetaData("direcionado", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
@@ -150,19 +150,19 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
   }
 
   public Aresta(
-    int vertice1,
-    int vertice2,
-    double peso,
+    int pessoa1,
+    int pessoa2,
+    double distancia,
     boolean direcionado,
     String descricao)
   {
     this();
-    this.vertice1 = vertice1;
-    setVertice1IsSet(true);
-    this.vertice2 = vertice2;
-    setVertice2IsSet(true);
-    this.peso = peso;
-    setPesoIsSet(true);
+    this.pessoa1 = pessoa1;
+    setPessoa1IsSet(true);
+    this.pessoa2 = pessoa2;
+    setPessoa2IsSet(true);
+    this.distancia = distancia;
+    setDistanciaIsSet(true);
     this.direcionado = direcionado;
     setDirecionadoIsSet(true);
     this.descricao = descricao;
@@ -173,9 +173,9 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
    */
   public Aresta(Aresta other) {
     __isset_bitfield = other.__isset_bitfield;
-    this.vertice1 = other.vertice1;
-    this.vertice2 = other.vertice2;
-    this.peso = other.peso;
+    this.pessoa1 = other.pessoa1;
+    this.pessoa2 = other.pessoa2;
+    this.distancia = other.distancia;
     this.direcionado = other.direcionado;
     if (other.isSetDescricao()) {
       this.descricao = other.descricao;
@@ -188,84 +188,84 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
 
   @Override
   public void clear() {
-    setVertice1IsSet(false);
-    this.vertice1 = 0;
-    setVertice2IsSet(false);
-    this.vertice2 = 0;
-    setPesoIsSet(false);
-    this.peso = 0.0;
+    setPessoa1IsSet(false);
+    this.pessoa1 = 0;
+    setPessoa2IsSet(false);
+    this.pessoa2 = 0;
+    setDistanciaIsSet(false);
+    this.distancia = 0.0;
     setDirecionadoIsSet(false);
     this.direcionado = false;
     this.descricao = null;
   }
 
-  public int getVertice1() {
-    return this.vertice1;
+  public int getPessoa1() {
+    return this.pessoa1;
   }
 
-  public Aresta setVertice1(int vertice1) {
-    this.vertice1 = vertice1;
-    setVertice1IsSet(true);
+  public Aresta setPessoa1(int pessoa1) {
+    this.pessoa1 = pessoa1;
+    setPessoa1IsSet(true);
     return this;
   }
 
-  public void unsetVertice1() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __VERTICE1_ISSET_ID);
+  public void unsetPessoa1() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PESSOA1_ISSET_ID);
   }
 
-  /** Returns true if field vertice1 is set (has been assigned a value) and false otherwise */
-  public boolean isSetVertice1() {
-    return EncodingUtils.testBit(__isset_bitfield, __VERTICE1_ISSET_ID);
+  /** Returns true if field pessoa1 is set (has been assigned a value) and false otherwise */
+  public boolean isSetPessoa1() {
+    return EncodingUtils.testBit(__isset_bitfield, __PESSOA1_ISSET_ID);
   }
 
-  public void setVertice1IsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VERTICE1_ISSET_ID, value);
+  public void setPessoa1IsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PESSOA1_ISSET_ID, value);
   }
 
-  public int getVertice2() {
-    return this.vertice2;
+  public int getPessoa2() {
+    return this.pessoa2;
   }
 
-  public Aresta setVertice2(int vertice2) {
-    this.vertice2 = vertice2;
-    setVertice2IsSet(true);
+  public Aresta setPessoa2(int pessoa2) {
+    this.pessoa2 = pessoa2;
+    setPessoa2IsSet(true);
     return this;
   }
 
-  public void unsetVertice2() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __VERTICE2_ISSET_ID);
+  public void unsetPessoa2() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PESSOA2_ISSET_ID);
   }
 
-  /** Returns true if field vertice2 is set (has been assigned a value) and false otherwise */
-  public boolean isSetVertice2() {
-    return EncodingUtils.testBit(__isset_bitfield, __VERTICE2_ISSET_ID);
+  /** Returns true if field pessoa2 is set (has been assigned a value) and false otherwise */
+  public boolean isSetPessoa2() {
+    return EncodingUtils.testBit(__isset_bitfield, __PESSOA2_ISSET_ID);
   }
 
-  public void setVertice2IsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VERTICE2_ISSET_ID, value);
+  public void setPessoa2IsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PESSOA2_ISSET_ID, value);
   }
 
-  public double getPeso() {
-    return this.peso;
+  public double getDistancia() {
+    return this.distancia;
   }
 
-  public Aresta setPeso(double peso) {
-    this.peso = peso;
-    setPesoIsSet(true);
+  public Aresta setDistancia(double distancia) {
+    this.distancia = distancia;
+    setDistanciaIsSet(true);
     return this;
   }
 
-  public void unsetPeso() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PESO_ISSET_ID);
+  public void unsetDistancia() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __DISTANCIA_ISSET_ID);
   }
 
-  /** Returns true if field peso is set (has been assigned a value) and false otherwise */
-  public boolean isSetPeso() {
-    return EncodingUtils.testBit(__isset_bitfield, __PESO_ISSET_ID);
+  /** Returns true if field distancia is set (has been assigned a value) and false otherwise */
+  public boolean isSetDistancia() {
+    return EncodingUtils.testBit(__isset_bitfield, __DISTANCIA_ISSET_ID);
   }
 
-  public void setPesoIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PESO_ISSET_ID, value);
+  public void setDistanciaIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __DISTANCIA_ISSET_ID, value);
   }
 
   public boolean isDirecionado() {
@@ -317,27 +317,27 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case VERTICE1:
+    case PESSOA1:
       if (value == null) {
-        unsetVertice1();
+        unsetPessoa1();
       } else {
-        setVertice1((Integer)value);
+        setPessoa1((Integer)value);
       }
       break;
 
-    case VERTICE2:
+    case PESSOA2:
       if (value == null) {
-        unsetVertice2();
+        unsetPessoa2();
       } else {
-        setVertice2((Integer)value);
+        setPessoa2((Integer)value);
       }
       break;
 
-    case PESO:
+    case DISTANCIA:
       if (value == null) {
-        unsetPeso();
+        unsetDistancia();
       } else {
-        setPeso((Double)value);
+        setDistancia((Double)value);
       }
       break;
 
@@ -362,14 +362,14 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case VERTICE1:
-      return Integer.valueOf(getVertice1());
+    case PESSOA1:
+      return Integer.valueOf(getPessoa1());
 
-    case VERTICE2:
-      return Integer.valueOf(getVertice2());
+    case PESSOA2:
+      return Integer.valueOf(getPessoa2());
 
-    case PESO:
-      return Double.valueOf(getPeso());
+    case DISTANCIA:
+      return Double.valueOf(getDistancia());
 
     case DIRECIONADO:
       return Boolean.valueOf(isDirecionado());
@@ -388,12 +388,12 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
     }
 
     switch (field) {
-    case VERTICE1:
-      return isSetVertice1();
-    case VERTICE2:
-      return isSetVertice2();
-    case PESO:
-      return isSetPeso();
+    case PESSOA1:
+      return isSetPessoa1();
+    case PESSOA2:
+      return isSetPessoa2();
+    case DISTANCIA:
+      return isSetDistancia();
     case DIRECIONADO:
       return isSetDirecionado();
     case DESCRICAO:
@@ -415,30 +415,30 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
     if (that == null)
       return false;
 
-    boolean this_present_vertice1 = true;
-    boolean that_present_vertice1 = true;
-    if (this_present_vertice1 || that_present_vertice1) {
-      if (!(this_present_vertice1 && that_present_vertice1))
+    boolean this_present_pessoa1 = true;
+    boolean that_present_pessoa1 = true;
+    if (this_present_pessoa1 || that_present_pessoa1) {
+      if (!(this_present_pessoa1 && that_present_pessoa1))
         return false;
-      if (this.vertice1 != that.vertice1)
-        return false;
-    }
-
-    boolean this_present_vertice2 = true;
-    boolean that_present_vertice2 = true;
-    if (this_present_vertice2 || that_present_vertice2) {
-      if (!(this_present_vertice2 && that_present_vertice2))
-        return false;
-      if (this.vertice2 != that.vertice2)
+      if (this.pessoa1 != that.pessoa1)
         return false;
     }
 
-    boolean this_present_peso = true;
-    boolean that_present_peso = true;
-    if (this_present_peso || that_present_peso) {
-      if (!(this_present_peso && that_present_peso))
+    boolean this_present_pessoa2 = true;
+    boolean that_present_pessoa2 = true;
+    if (this_present_pessoa2 || that_present_pessoa2) {
+      if (!(this_present_pessoa2 && that_present_pessoa2))
         return false;
-      if (this.peso != that.peso)
+      if (this.pessoa2 != that.pessoa2)
+        return false;
+    }
+
+    boolean this_present_distancia = true;
+    boolean that_present_distancia = true;
+    if (this_present_distancia || that_present_distancia) {
+      if (!(this_present_distancia && that_present_distancia))
+        return false;
+      if (this.distancia != that.distancia)
         return false;
     }
 
@@ -476,32 +476,32 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.valueOf(isSetVertice1()).compareTo(other.isSetVertice1());
+    lastComparison = Boolean.valueOf(isSetPessoa1()).compareTo(other.isSetPessoa1());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetVertice1()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.vertice1, other.vertice1);
+    if (isSetPessoa1()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pessoa1, other.pessoa1);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetVertice2()).compareTo(other.isSetVertice2());
+    lastComparison = Boolean.valueOf(isSetPessoa2()).compareTo(other.isSetPessoa2());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetVertice2()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.vertice2, other.vertice2);
+    if (isSetPessoa2()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pessoa2, other.pessoa2);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetPeso()).compareTo(other.isSetPeso());
+    lastComparison = Boolean.valueOf(isSetDistancia()).compareTo(other.isSetDistancia());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetPeso()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.peso, other.peso);
+    if (isSetDistancia()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.distancia, other.distancia);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -546,16 +546,16 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
     StringBuilder sb = new StringBuilder("Aresta(");
     boolean first = true;
 
-    sb.append("vertice1:");
-    sb.append(this.vertice1);
+    sb.append("pessoa1:");
+    sb.append(this.pessoa1);
     first = false;
     if (!first) sb.append(", ");
-    sb.append("vertice2:");
-    sb.append(this.vertice2);
+    sb.append("pessoa2:");
+    sb.append(this.pessoa2);
     first = false;
     if (!first) sb.append(", ");
-    sb.append("peso:");
-    sb.append(this.peso);
+    sb.append("distancia:");
+    sb.append(this.distancia);
     first = false;
     if (!first) sb.append(", ");
     sb.append("direcionado:");
@@ -614,26 +614,26 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
           break;
         }
         switch (schemeField.id) {
-          case 1: // VERTICE1
+          case 1: // PESSOA1
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.vertice1 = iprot.readI32();
-              struct.setVertice1IsSet(true);
+              struct.pessoa1 = iprot.readI32();
+              struct.setPessoa1IsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // VERTICE2
+          case 2: // PESSOA2
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.vertice2 = iprot.readI32();
-              struct.setVertice2IsSet(true);
+              struct.pessoa2 = iprot.readI32();
+              struct.setPessoa2IsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // PESO
+          case 3: // DISTANCIA
             if (schemeField.type == org.apache.thrift.protocol.TType.DOUBLE) {
-              struct.peso = iprot.readDouble();
-              struct.setPesoIsSet(true);
+              struct.distancia = iprot.readDouble();
+              struct.setDistanciaIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -669,14 +669,14 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      oprot.writeFieldBegin(VERTICE1_FIELD_DESC);
-      oprot.writeI32(struct.vertice1);
+      oprot.writeFieldBegin(PESSOA1_FIELD_DESC);
+      oprot.writeI32(struct.pessoa1);
       oprot.writeFieldEnd();
-      oprot.writeFieldBegin(VERTICE2_FIELD_DESC);
-      oprot.writeI32(struct.vertice2);
+      oprot.writeFieldBegin(PESSOA2_FIELD_DESC);
+      oprot.writeI32(struct.pessoa2);
       oprot.writeFieldEnd();
-      oprot.writeFieldBegin(PESO_FIELD_DESC);
-      oprot.writeDouble(struct.peso);
+      oprot.writeFieldBegin(DISTANCIA_FIELD_DESC);
+      oprot.writeDouble(struct.distancia);
       oprot.writeFieldEnd();
       oprot.writeFieldBegin(DIRECIONADO_FIELD_DESC);
       oprot.writeBool(struct.direcionado);
@@ -704,13 +704,13 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
     public void write(org.apache.thrift.protocol.TProtocol prot, Aresta struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetVertice1()) {
+      if (struct.isSetPessoa1()) {
         optionals.set(0);
       }
-      if (struct.isSetVertice2()) {
+      if (struct.isSetPessoa2()) {
         optionals.set(1);
       }
-      if (struct.isSetPeso()) {
+      if (struct.isSetDistancia()) {
         optionals.set(2);
       }
       if (struct.isSetDirecionado()) {
@@ -720,14 +720,14 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
         optionals.set(4);
       }
       oprot.writeBitSet(optionals, 5);
-      if (struct.isSetVertice1()) {
-        oprot.writeI32(struct.vertice1);
+      if (struct.isSetPessoa1()) {
+        oprot.writeI32(struct.pessoa1);
       }
-      if (struct.isSetVertice2()) {
-        oprot.writeI32(struct.vertice2);
+      if (struct.isSetPessoa2()) {
+        oprot.writeI32(struct.pessoa2);
       }
-      if (struct.isSetPeso()) {
-        oprot.writeDouble(struct.peso);
+      if (struct.isSetDistancia()) {
+        oprot.writeDouble(struct.distancia);
       }
       if (struct.isSetDirecionado()) {
         oprot.writeBool(struct.direcionado);
@@ -742,16 +742,16 @@ public class Aresta implements org.apache.thrift.TBase<Aresta, Aresta._Fields>, 
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(5);
       if (incoming.get(0)) {
-        struct.vertice1 = iprot.readI32();
-        struct.setVertice1IsSet(true);
+        struct.pessoa1 = iprot.readI32();
+        struct.setPessoa1IsSet(true);
       }
       if (incoming.get(1)) {
-        struct.vertice2 = iprot.readI32();
-        struct.setVertice2IsSet(true);
+        struct.pessoa2 = iprot.readI32();
+        struct.setPessoa2IsSet(true);
       }
       if (incoming.get(2)) {
-        struct.peso = iprot.readDouble();
-        struct.setPesoIsSet(true);
+        struct.distancia = iprot.readDouble();
+        struct.setDistanciaIsSet(true);
       }
       if (incoming.get(3)) {
         struct.direcionado = iprot.readBool();

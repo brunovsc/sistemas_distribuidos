@@ -3,7 +3,6 @@
 cp ../../../../../../../target/sd-project-1.0-SNAPSHOT.jar ..
 
 cd .. # returning to project's root directory
-rm logs/logServer* # cleaning log files
 
 N=$1
 echo "Initializing "$N" servers" > logs/log.txt

@@ -2,5 +2,7 @@
 ===== Creating new cluster on port 5003
 ===== Bootstrapping new cluster on port 5003
 ===== Created  copycat server on port 5003
+-- Read Vertice
 -- Create Vertice
+-- Read Vertice
 -- Read Vertice

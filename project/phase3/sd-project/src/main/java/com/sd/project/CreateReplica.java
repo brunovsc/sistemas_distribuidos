@@ -44,7 +44,7 @@ public class CreateReplica {
 		CopycatServer.Builder builder = CopycatServer.builder(address); 
 		builder.withStateMachine(GraphStateMachine::new);
 		builder.withTransport(NettyTransport.builder().withThreads(1).build());
-		builder.withStorage(Storage.builder().withDirectory(new File("logsCopycat"+selfId)).withStorageLevel(StorageLevel.DISK).build());
+		builder.withStorage(Storage.builder().withDirectory(new File("logs/Copycat/logsCopycat"+selfId)).withStorageLevel(StorageLevel.DISK).build());
 	
 		CopycatServer copycatServer = builder.build();
 		copycatServer.serializer().register(CreateVertice.class);

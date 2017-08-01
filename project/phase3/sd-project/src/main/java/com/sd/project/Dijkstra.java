@@ -66,18 +66,21 @@ public class Dijkstra{
     	for (Aresta aresta: arestas) {
     	 
   	    //direcionada
-            if (aresta.isDirecionado() == true && aresta.getVertice1() == nodo.getNome()
-                    && aresta.getVertice2() == alvo.getNome()) {
-                return aresta.getPeso();
+            if (aresta.isDirecionado() == true) {
+
+		if(aresta.getPessoa1() == nodo.getId()
+                    && aresta.getPessoa2() == alvo.getId())
+                    return aresta.getDistancia();
             }
 	    else { //não direcionada
 
-	   	if((aresta.getVertice1() == nodo.getNome()
-                    && aresta.getVertice2() == alvo.getNome()) || 
-			(aresta.getVertice2() == nodo.getNome()
-        	            && aresta.getVertice1() == alvo.getNome()))	
-		   return aresta.getPeso();
-
+	   	if(aresta.getPessoa1() == nodo.getId()
+                    && aresta.getPessoa2() == alvo.getId())
+		    return aresta.getDistancia();
+		
+		if(aresta.getPessoa2() == nodo.getId()
+        	    && aresta.getPessoa1() == alvo.getId())	
+		    return aresta.getDistancia();
 	    }
         }
         throw new RuntimeException("Nao deveria acontecer");
@@ -89,21 +92,23 @@ public class Dijkstra{
         //aqui tbmmm
         for (Aresta aresta: arestas) {
             
-	    if (aresta.isDirecionado() == true && aresta.getVertice1() == nodo.getNome()
-            	&& !verificaMarcado(findVertice(aresta.getVertice2()))) {
-        	vizinhos.add(findVertice(aresta.getVertice2()));
+	    if (aresta.isDirecionado() == true) {
+
+		if(aresta.getPessoa1() == nodo.getId()
+            	    && !verificaMarcado(findVertice(aresta.getPessoa2())))
+        	    vizinhos.add(findVertice(aresta.getPessoa2()));
      	    }
 	    else {
 
-	    	if(aresta.getVertice1() == nodo.getNome()
-            	    && !verificaMarcado(findVertice(aresta.getVertice2()))) { 
+	    	if(aresta.getPessoa1() == nodo.getId()
+            	    && !verificaMarcado(findVertice(aresta.getPessoa2()))) { 
 
-		    vizinhos.add(findVertice(aresta.getVertice2()));
+		    vizinhos.add(findVertice(aresta.getPessoa2()));
 	    	}
-	    	if(aresta.getVertice2() == nodo.getNome()
-            	    && !verificaMarcado(findVertice(aresta.getVertice1()))) { 
+	    	if(aresta.getPessoa2() == nodo.getId()
+            	    && !verificaMarcado(findVertice(aresta.getPessoa1()))) { 
 
-		    vizinhos.add(findVertice(aresta.getVertice1()));
+		    vizinhos.add(findVertice(aresta.getPessoa1()));
 	    	}
 	    }   
 	}    	
@@ -174,7 +179,7 @@ public class Dijkstra{
     private Vertice findVertice(int vertice) {
         
         for(Vertice v: this.vertices){
-            if(v.nome == vertice){
+            if(v.id == vertice){
                 return v;
             }
         }
@@ -183,3 +188,4 @@ public class Dijkstra{
     }
 
 }
+
