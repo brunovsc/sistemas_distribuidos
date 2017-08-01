@@ -267,13 +267,13 @@ public class ServerHandler implements Graph.Iface{
             throw new KeyNotFound(key, "Vertice nao encontrado");
         }
         
-	ArrayList<Aresta> arestasToRemove = new ArrayList<Aresta>();
-        for(Aresta a : grafo.arestas) {
-            if(a.vertice1 == vertice.nome || a.vertice2 == vertice.nome){
-                arestasToRemove.add(a);
+        ArrayList<Aresta> arestasToRemove = new ArrayList<Aresta>();
+            for(Aresta a : grafo.arestas) {
+                if(a.vertice1 == vertice.nome || a.vertice2 == vertice.nome){
+                    arestasToRemove.add(a);
+                }
             }
-        }
-	grafo.arestas.removeAll(arestasToRemove);
+        grafo.arestas.removeAll(arestasToRemove);
 
         for(int i = 0; i < N; i++) { // Arestas (v2, key) sao removidas nos demais servidores
             boolean p =  false;
@@ -286,6 +286,7 @@ public class ServerHandler implements Graph.Iface{
         }
 
         grafo.vertices.remove(vertice);
+
         unblockVertice(key);
         return true;
     }
@@ -326,15 +327,23 @@ public class ServerHandler implements Graph.Iface{
         verifyResourceVertice(nome); 
         
         logForOperation(3);
-        Vertice vertice = findVertice(grafo, nome);
+        
+        CompletableFuture<Object> future = client.submit(new updateVertice(nome,cor,peso,descricao));
+        Object result = future.join();
+        Vertice vertice = (Vertice)result;     
+
+        //Vertice vertice = findVertice(grafo, nome);
+        
+
         if(vertice == null){
             unblockVertice(nome);
             throw new KeyNotFound(nome, "Vertice nao encontrado");
         }
         // Restriction: restrição de não alteração do nome do vértice
-        vertice.cor = cor;
-        vertice.peso = peso;
-        vertice.descricao = descricao;
+        //vertice.cor = cor;
+        //vertice.peso = peso;
+        //vertice.descricao = descricao;   
+
         unblockVertice(nome);
         return true;
     }
@@ -374,7 +383,11 @@ public class ServerHandler implements Graph.Iface{
         Aresta aresta = findAresta(grafo, vertice1, vertice2);
         
         if(aresta == null){
-            grafo.arestas.add(new Aresta(vertice1, vertice2, peso, direcionado, descricao));
+            boolean op = false;
+            client.submit(new createAresta(vertice1, vertice2, peso, direcionado, descricao)).thenAccept(result -> {
+                //op = (boolean)result;
+            });
+            //grafo.arestas.add(new Aresta(vertice1, vertice2, peso, direcionado, descricao));
             unblockAresta(vertice1, vertice2);
             return true;
         }
@@ -407,12 +420,17 @@ public class ServerHandler implements Graph.Iface{
         verifyResourceAresta(vertice1, vertice2);        
         
         logForOperation(6);
-        Aresta aresta = findAresta(grafo, vertice1, vertice2);
+        //Aresta aresta = findAresta(grafo, vertice1, vertice2);
+        
+        CompletableFuture<Object> future = client.submit(new deleteAresta(vertice1, vertice2));
+        Object result = future.join();
+        Aresta aresta = (Aresta)result;
+
         if(aresta == null){
             unblockAresta(vertice1, vertice2);
             throw new KeyNotFound(0, "Aresta nao encontrada");
         }
-        grafo.arestas.remove(aresta);
+        //grafo.arestas.remove(aresta);
         unblockAresta(vertice1, vertice2);
         return true;        
     }
@@ -431,7 +449,13 @@ public class ServerHandler implements Graph.Iface{
         verifyResourceAresta(vertice1, vertice2);
         
         logForOperation(8);
-        Aresta aresta = findAresta(grafo, vertice1, vertice2);
+        
+        CompletableFuture<Object> future = client.submit(new readAresta(vertice1, vertice2));
+        Object result = future.join();
+        Aresta aresta = (Aresta)result;
+
+        //Aresta aresta = findAresta(grafo, vertice1, vertice2);
+        
         if(aresta == null){
             unblockAresta(vertice1, vertice2);
             throw new KeyNotFound(0, "Aresta nao encontrada");            
@@ -454,15 +478,21 @@ public class ServerHandler implements Graph.Iface{
         verifyResourceAresta(vertice1, vertice2);
         
         logForOperation(7);
-        Aresta aresta = findAresta(grafo, vertice1, vertice2);
+        
+        CompletableFuture<Object> future = client.submit(new updateAresta(vertice1, vertice2, peso, direcionado,descricao));
+        Object result = future.join();
+        Aresta aresta = (Aresta)result;
+
+        //Aresta aresta = findAresta(grafo, vertice1, vertice2);
+        
         if(aresta == null){
             unblockAresta(vertice1, vertice2);
             throw new KeyNotFound(0, "Aresta nao encontrada");  
         }
         // Restriction: aresta não tem seus vertices alterados
-        aresta.peso = peso;
-        aresta.direcionado = direcionado;
-        aresta.descricao = descricao;
+        //aresta.peso = peso;
+        //aresta.direcionado = direcionado;
+        //aresta.descricao = descricao;
 		unblockAresta(vertice1, vertice2);
         return true;        
     }
