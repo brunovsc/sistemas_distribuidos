@@ -227,7 +227,6 @@ graphservice/Graph$readVertice_args.class
 graphservice/Graph$AsyncProcessor$readAresta.class
 graphservice/Graph$menorCaminho_result$menorCaminho_resultTupleScheme.class
 graphservice/Graph$readVertice_result$readVertice_resultStandardSchemeFactory.class
-graphservice/GraphServer$1.class
 graphservice/Graph$Client$Factory.class
 graphservice/Graph$updateAresta_result$_Fields.class
 graphservice/Graph$listSelfVertices_result$listSelfVertices_resultTupleScheme.class
@@ -311,6 +310,7 @@ graphservice/Graph$Processor.class
 graphservice/ResourceInUse$ResourceInUseTupleSchemeFactory.class
 graphservice/Graph$AsyncProcessor$createAresta.class
 graphservice/Graph$listArestasFromVertice_result.class
+graphservice/CreateReplica.class
 graphservice/KeyAlreadyUsed.class
 graphservice/Graph$updateAresta_result.class
 graphservice/Graph$listVerticesFromAresta_result$listVerticesFromAresta_resultStandardScheme.class

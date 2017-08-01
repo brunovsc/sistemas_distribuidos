@@ -1,16 +1,12 @@
-===== Creating copycat server on port 5000
-===== Creating new cluster on port 5000
-===== Created  copycat server on port 5000 
 ===== Starting the server on port 9090
-
-##### Creating connections to other servers #####
-
-
-##### Finished creating connections to other servers #####
-
------ OPERATION on port 9090 - Create Vertice
------ OPERATION on port 9090 - Create Vertice
------ OPERATION on port 9090 - Read Vertice
+===== Connecting Server Handler to Cluster 1
+===== Connecting Server Handler to Cluster 2
+===== Connecting Server Handler to Cluster 3
+Cluster to process: 1
 ----- OPERATION on port 9090 - Read Vertice
 ----- OPERATION on port 9090 - List Vertices
 ----- OPERATION on port 9090 - List Arestas
+Cluster to process: 0
+----- OPERATION on port 9090 - Create Vertice
+Cluster to process: 0
+----- OPERATION on port 9090 - Read Vertice

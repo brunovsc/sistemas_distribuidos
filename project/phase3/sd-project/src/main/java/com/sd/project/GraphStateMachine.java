@@ -38,6 +38,7 @@ public class GraphStateMachine extends StateMachine{
 			String descricao = (String)commit.operation().descricao();
 			Vertice v = new Vertice(nome, cor, peso, descricao);
         	grafo.addToVertices(v);
+        	System.out.println("-- Create Vertice");
 		} catch(Exception e){
 			return false;
 		} finally {
@@ -47,13 +48,15 @@ public class GraphStateMachine extends StateMachine{
 	}
 
 	public Object updateVertice(Commit<UpdateVertice> commit){
+	
 		Vertice v = null;
 		try{
+		/*
 			int nome = (int)commit.operation().nome();
 			v = findVertice(v);
 			v.cor = (int)commit.operation().cor();
 			v.peso = (double)commit.operation().peso();
-			v.descricao = (String)commit.operation().descricao();
+			v.descricao = (String)commit.operation().descricao();*/
 		} catch(Exception e){
 			return false;
 		} finally {
@@ -65,13 +68,14 @@ public class GraphStateMachine extends StateMachine{
 
 	public Object createAresta(Commit<CreateAresta> commit){
 		try{
+		/*
 			int vertice1 = (int)commit.operation().vertice1();
 			int vertice2 = (int)commit.operation().vertice2();
 			double peso = (double)commit.operation().peso();
 			boolean direcionada = (boolean)commit.operation().direcionada();
 			String descricao = (String)commit.operation().descricao();
 			Aresta a = new Aresta(vertice1, vertice2, peso, direcionada, descricao);
-        	grafo.addToArestas(a);
+        	grafo.addToArestas(a);*/
 		} catch(Exception e){
 			return false;
 		} finally {
@@ -86,6 +90,7 @@ public class GraphStateMachine extends StateMachine{
 		try{
 			int nome = (int)commit.operation().nome();
 			v = findVertice( nome);
+        	System.out.println("-- Read Vertice");
 		} catch(Exception e) {
 		
 		} finally {
@@ -111,12 +116,13 @@ public class GraphStateMachine extends StateMachine{
 	public Object updateAresta(Commit<UpdateAresta> commit){
 		Aresta a = null;
 		try{
+		/*
 			int vertice1 = (int)commit.operation().vertice1();
 			int vertice2 = (int)commit.operation().vertice2();
 			a = findAresta(vertice1, vertice2);
 			a.peso = (double)commit.operation().peso();
 			a.direcionada = (boolean)commit.operation().direcionada();
-			a.descricao = (String)commit.operation().descricao();
+			a.descricao = (String)commit.operation().descricao();*/
 		} catch(Exception e){
 			return false;
 		} finally {
@@ -216,7 +222,7 @@ class CreateVertice implements Command<Object>{
 class DeleteVertice implements Command<Object>{
 	private final Object nome;
 
-	public ReadVertice(Object nome){
+	public DeleteVertice(Object nome){
 		this.nome = nome;
 	}
 	
@@ -231,7 +237,7 @@ class UpdateVertice implements Command<Object>{
 	private final Object peso;
 	private final Object descricao;
 	
-	public CreateVertice(Object nome, Object cor, Object peso, Object descricao){
+	public UpdateVertice(Object nome, Object cor, Object peso, Object descricao){
 		this.nome = nome;
 		this.cor = cor;
 		this.peso = peso;
@@ -261,7 +267,7 @@ class ReadAresta implements Query<Object>{
 
 	public ReadAresta(Object vertice1, Object vertice2){
 		this.vertice1 = vertice1;
-		this.vertice1 = vertice2;
+		this.vertice2 = vertice2;
 	}
 	
 	public Object vertice1(){
@@ -363,16 +369,5 @@ class UpdateAresta implements Command<Object>{
 		return direcionado;
 	}
 }
-/*
-class FindVertice implements Query<Object> {
-	private final Object nome;
-	
-	public ReadVertice(Object nome){
-		this.nome = nome;
-	}
-	public Object nome(){
-		return nome;
-	}
-}*/
 
 

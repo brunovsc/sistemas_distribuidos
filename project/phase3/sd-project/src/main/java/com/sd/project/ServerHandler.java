@@ -35,7 +35,7 @@ import io.atomix.catalyst.transport.local.LocalServerRegistry;
 
 public class ServerHandler implements Graph.Iface{
     
-    private static CopycatClient client;
+    private static CopycatClient []copycatClients;
     private final Grafo grafo = new Grafo();
     private static final long sleepTime = 1000;
     private static final int maxRetries = 10;
@@ -70,22 +70,13 @@ public class ServerHandler implements Graph.Iface{
         transports = new TTransport[N];
         protocols = new TProtocol[N];
         clients = new Graph.Client[N];
+        
+        copycatClients = new CopycatClient[3];
 
-		CopycatClient.Builder builder = CopycatClient.builder();
-		builder.withTransport(NettyTransport.builder().withThreads(1).build());
-		client = builder.build();
-		client.serializer().register(CreateVertice.class);
-		
-        int replicaFirstPort = 5000;
-        int selfReplicaPort = replicaFirstPort + selfId;
-		Collection<Address> cluster = Arrays.asList(
-			new Address("localhost", 5000));
-  		CompletableFuture<CopycatClient> future = client.connect(cluster);
-		future.join();
-		
+		connectToClusters();
     }    
     
-    public void connectToServerId(int id, int port){
+    public void connectToServerId(int id, int port) throws Exception{
         try{
             transports[id] = new TSocket("localhost", port);
             transports[id].open();
@@ -93,13 +84,65 @@ public class ServerHandler implements Graph.Iface{
             clients[id] = new Graph.Client(protocols[id]);
             System.out.println("Server " + selfPort + " connected to server " + port);
         }catch(TTransportException e){
-            System.out.println(e);
+            throw e;
         }
+    }
+    
+    public void connectToClusters(){
+    
+		CopycatClient.Builder builderCluster1 = CopycatClient.builder();
+		builderCluster1.withTransport(NettyTransport.builder().withThreads(1).build());
+		copycatClients[0] = builderCluster1.build();
+		copycatClients[0].serializer().register(CreateVertice.class);
+		copycatClients[0].serializer().register(ReadVertice.class);
+		
+   		System.out.println("===== Connecting Server Handler to Cluster 1");
+		Collection<Address> cluster1 = Arrays.asList(
+			new Address("localhost", 5000), new Address("localhost", 5001), new Address("localhost", 5002));
+		try{
+  			CompletableFuture<CopycatClient> future = copycatClients[0].connect(cluster1);
+			future.join();
+		} catch (Exception e){
+			System.out.println("!!!! Failed to connect Server Handler to Cluster 1 ");
+		}
+		
+		CopycatClient.Builder builderCluster2 = CopycatClient.builder();
+		builderCluster2.withTransport(NettyTransport.builder().withThreads(1).build());
+		copycatClients[1] = builderCluster2.build();
+		copycatClients[1].serializer().register(CreateVertice.class);
+		copycatClients[1].serializer().register(ReadVertice.class);
+		
+   		System.out.println("===== Connecting Server Handler to Cluster 2");
+		Collection<Address> cluster2 = Arrays.asList(
+			new Address("localhost", 5003), new Address("localhost", 5004), new Address("localhost", 5005));
+		try{
+  			CompletableFuture<CopycatClient> future = copycatClients[1].connect(cluster2);
+			future.join();
+		} catch (Exception e){
+			System.out.println("!!!! Failed to connect Server Handler to Cluster 2 ");
+		}
+		
+		CopycatClient.Builder builderCluster3 = CopycatClient.builder();
+		builderCluster3.withTransport(NettyTransport.builder().withThreads(1).build());
+		copycatClients[2] = builderCluster3.build();
+		copycatClients[2].serializer().register(CreateVertice.class);
+		copycatClients[2].serializer().register(ReadVertice.class);
+		
+   		System.out.println("===== Connecting Server Handler to Cluster 3");
+		Collection<Address> cluster3 = Arrays.asList(
+			new Address("localhost", 5006), new Address("localhost", 5007), new Address("localhost", 5008));
+		try{
+  			CompletableFuture<CopycatClient> future = copycatClients[2].connect(cluster3);
+			future.join();
+		} catch (Exception e){
+			System.out.println("!!!! Failed to connect Server Handler to Cluster 3 ");
+		}
     }
     
     public int processRequest(int vertice){
         try{
-            int server = MD5.md5(String.format("%d", vertice), String.format("%d", N));  
+            int server = MD5.md5(String.format("%d", vertice), String.format("%d", 3));  
+            System.out.println("Cluster to process: " + server);
             return server;
         }catch(Exception e){
             e.printStackTrace();
@@ -197,7 +240,8 @@ public class ServerHandler implements Graph.Iface{
     }
     
     public Vertice findVertice(Grafo grafo, int vertice){
-        CompletableFuture<Object> future = client.submit(new ReadVertice(vertice));
+    	int server = processRequest(vertice);
+        CompletableFuture<Object> future = copycatClients[server].submit(new ReadVertice(vertice));
 		Object result = future.join();
         Vertice v = (Vertice)result;
         return v;
@@ -214,39 +258,23 @@ public class ServerHandler implements Graph.Iface{
     
     @Override
     public boolean createVertice(int nome, int cor, double peso, String descricao) throws KeyAlreadyUsed, ResourceInUse, TException {
-        int server = processRequest(nome);
-        if(server != selfId){
-            logForwardedRequest(server, 1);
-            try{
-                boolean p = clients[server].createVertice(nome, cor, peso, descricao);
-                return p;
-            } catch(KeyAlreadyUsed e){
-                System.out.println(e.getCause());
-                throw e;
-            } catch(ResourceInUse e){
-                System.out.println(e.getCause());
-                throw e;
-            } catch(TException e){
-                System.out.println(e.getCause());
-                throw e;
-            }
-        }
+    
         verifyResourceVertice(nome);
-        
+    	int server = processRequest(nome);
+    	CopycatClient client = copycatClients[server];
         logForOperation(1);
+    	
+        CompletableFuture<Object> future = client.submit(new ReadVertice(nome));
+		Object result = future.join();
+        Vertice vertice = (Vertice)result;
         
-        if(findVertice(grafo, nome) != null){ // Restriction: restrição de criação apenas se vértice já não existe
-            unblockVertice(nome);
-            throw new KeyAlreadyUsed(nome, "Vertice ja existente");            
-        }
-        
-        boolean op = false;
-		client.submit(new CreateVertice(nome, cor, peso, descricao)).thenAccept(result -> {
-  			//op = (boolean)result;
-		});
-        
-        unblockVertice(nome);
-        return true;
+    	if(vertice != null){
+    	    unblockVertice(nome);
+            throw new KeyAlreadyUsed(nome, "Vertice ja existente");  
+    	}
+  		client.submit(new CreateVertice(nome, cor, peso, descricao)).thenAccept(result2 -> {});
+  		unblockVertice(nome);
+  		return true;
     }
 
     @Override
@@ -291,18 +319,14 @@ public class ServerHandler implements Graph.Iface{
         return true;
     }
 
-    @Override
+	@Override
     public Vertice readVertice(int key) throws KeyNotFound, ResourceInUse, TException {
-        int server = processRequest(key);
-        if(server != selfId){
-            logForwardedRequest(server, 4);
-            Vertice p = clients[server].readVertice(key);
-            return p;
-        }
-        verifyResourceVertice(key);
-        
+    	verifyResourceVertice(key);
+    	int server = processRequest(key);
+    	CopycatClient client = copycatClients[server];
         logForOperation(4);
-        
+    
+
         CompletableFuture<Object> future = client.submit(new ReadVertice(key));
 		Object result = future.join();
         Vertice vertice = (Vertice)result;
@@ -318,6 +342,7 @@ public class ServerHandler implements Graph.Iface{
 
     @Override
     public boolean updateVertice(int nome, int cor, double peso, String descricao) throws KeyNotFound, ResourceInUse, TException {
+    /*
         int server = processRequest(nome);
         if(server != selfId){
             logForwardedRequest(server, 3);
@@ -328,7 +353,7 @@ public class ServerHandler implements Graph.Iface{
         
         logForOperation(3);
         
-        CompletableFuture<Object> future = client.submit(new updateVertice(nome,cor,peso,descricao));
+        CompletableFuture<Object> future = client.submit(new UpdateVertice(nome,cor,peso,descricao));
         Object result = future.join();
         Vertice vertice = (Vertice)result;     
 
@@ -344,12 +369,13 @@ public class ServerHandler implements Graph.Iface{
         //vertice.peso = peso;
         //vertice.descricao = descricao;   
 
-        unblockVertice(nome);
+        unblockVertice(nome);*/
         return true;
     }
 
     @Override
     public boolean createAresta(int vertice1, int vertice2, double peso, boolean direcionado, String descricao) throws KeyAlreadyUsed, ResourceInUse, KeyNotFound, BadParameter, TException {
+    /*
     	if(vertice1 == vertice2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
@@ -384,7 +410,7 @@ public class ServerHandler implements Graph.Iface{
         
         if(aresta == null){
             boolean op = false;
-            client.submit(new createAresta(vertice1, vertice2, peso, direcionado, descricao)).thenAccept(result -> {
+            client.submit(new CreateAresta(vertice1, vertice2, peso, direcionado, descricao)).thenAccept(result -> {
                 //op = (boolean)result;
             });
             //grafo.arestas.add(new Aresta(vertice1, vertice2, peso, direcionado, descricao));
@@ -403,11 +429,13 @@ public class ServerHandler implements Graph.Iface{
         else{ // direcionada de v2 pra v1
             unblockAresta(vertice1, vertice2);
             throw new KeyAlreadyUsed(0, "Aresta direcionada ja existente do vertice 2 para o vertice 1");     
-        }
+        }*/
+        return true;
     }
 
     @Override
     public boolean deleteAresta(int vertice1, int vertice2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
+    /*
         if(vertice1 == vertice2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
@@ -422,7 +450,7 @@ public class ServerHandler implements Graph.Iface{
         logForOperation(6);
         //Aresta aresta = findAresta(grafo, vertice1, vertice2);
         
-        CompletableFuture<Object> future = client.submit(new deleteAresta(vertice1, vertice2));
+        CompletableFuture<Object> future = client.submit(new DeleteAresta(vertice1, vertice2));
         Object result = future.join();
         Aresta aresta = (Aresta)result;
 
@@ -431,12 +459,13 @@ public class ServerHandler implements Graph.Iface{
             throw new KeyNotFound(0, "Aresta nao encontrada");
         }
         //grafo.arestas.remove(aresta);
-        unblockAresta(vertice1, vertice2);
+        unblockAresta(vertice1, vertice2);*/
         return true;        
     }
 
     @Override
     public Aresta readAresta(int vertice1, int vertice2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
+    /*
     	if(vertice1 == vertice2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
@@ -450,7 +479,7 @@ public class ServerHandler implements Graph.Iface{
         
         logForOperation(8);
         
-        CompletableFuture<Object> future = client.submit(new readAresta(vertice1, vertice2));
+        CompletableFuture<Object> future = client.submit(new ReadAresta(vertice1, vertice2));
         Object result = future.join();
         Aresta aresta = (Aresta)result;
 
@@ -461,11 +490,13 @@ public class ServerHandler implements Graph.Iface{
             throw new KeyNotFound(0, "Aresta nao encontrada");            
         }
         unblockAresta(vertice1, vertice2);
-        return aresta;
+        return aresta;*/
+        return null;
     }
 
     @Override
     public boolean updateAresta(int vertice1, int vertice2, double peso, boolean direcionado, String descricao) throws KeyNotFound, ResourceInUse, BadParameter, TException {
+    /*
     	if(vertice1 == vertice2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
@@ -479,7 +510,7 @@ public class ServerHandler implements Graph.Iface{
         
         logForOperation(7);
         
-        CompletableFuture<Object> future = client.submit(new updateAresta(vertice1, vertice2, peso, direcionado,descricao));
+        CompletableFuture<Object> future = client.submit(new UpdateAresta(vertice1, vertice2, peso, direcionado,descricao));
         Object result = future.join();
         Aresta aresta = (Aresta)result;
 
@@ -493,7 +524,7 @@ public class ServerHandler implements Graph.Iface{
         //aresta.peso = peso;
         //aresta.direcionado = direcionado;
         //aresta.descricao = descricao;
-		unblockAresta(vertice1, vertice2);
+		unblockAresta(vertice1, vertice2);*/
         return true;        
     }
     

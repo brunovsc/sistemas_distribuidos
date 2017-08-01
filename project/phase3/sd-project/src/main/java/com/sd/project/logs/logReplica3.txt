@@ -1,0 +1,6 @@
+===== Creating copycat server on port 5003
+===== Creating new cluster on port 5003
+===== Bootstrapping new cluster on port 5003
+===== Created  copycat server on port 5003
+-- Create Vertice
+-- Read Vertice

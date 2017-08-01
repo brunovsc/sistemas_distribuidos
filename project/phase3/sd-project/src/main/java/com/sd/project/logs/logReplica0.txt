@@ -1,0 +1,5 @@
+===== Creating copycat server on port 5000
+===== Creating new cluster on port 5000
+===== Bootstrapping new cluster on port 5000
+===== Created  copycat server on port 5000
+-- Create Vertice
