@@ -1,2 +1,1 @@
-pkill -f GraphServer
-pkill -f SNAPSHOT
+pkill -f graphservice.

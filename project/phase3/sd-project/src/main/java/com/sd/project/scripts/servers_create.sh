@@ -3,7 +3,7 @@
 cp ../../../../../../../target/sd-project-1.0-SNAPSHOT.jar ..
 
 cd .. # returning to project's root directory
-rm logs/* # cleaning log files
+rm logs/logServer* # cleaning log files
 
 N=$1
 echo "Initializing "$N" servers" > logs/log.txt
@@ -16,7 +16,7 @@ while [ $id -lt $N ]; do
 	filename="logServer"$id".txt"
 	filePath=logs/$filename
 	#java -cp ".:./jars/libthrift-0.10.0.jar:./jars/slf4j.jar:./jars/slf4j-simple-1.7.25.jar" graphservice.GraphServer $N $id $firstPort > $filePath &
-	java -cp ".:./jars/libthrift-0.10.0.jar:./jars/slf4j.jar:./jars/slf4j-simple-1.7.25.jar" -jar sd-project-1.0-SNAPSHOT.jar $N $id $firstPort > $filePath &
+	java -cp ".:./jars/libthrift-0.10.0.jar:./jars/slf4j.jar:./jars/slf4j-simple-1.7.25.jar:sd-project-1.0-SNAPSHOT.jar" graphservice.GraphServer $N $id $firstPort > $filePath &
 	((id++))
 done
 
