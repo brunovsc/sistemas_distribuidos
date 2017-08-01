@@ -53,6 +53,11 @@ public class CreateReplica {
 		copycatServer.serializer().register(DeleteVertice.class);
 		copycatServer.serializer().register(DeleteArestasFromVertice.class);
 		
+		copycatServer.serializer().register(CreateAresta.class);
+		copycatServer.serializer().register(ReadAresta.class);
+		copycatServer.serializer().register(UpdateAresta.class);
+		copycatServer.serializer().register(DeleteAresta.class);
+		
    		if(firstOnCluster){ // create a new cluster
    			System.out.println("===== Creating new cluster on port " + selfPort);
 			CompletableFuture<CopycatServer> future = copycatServer.bootstrap();

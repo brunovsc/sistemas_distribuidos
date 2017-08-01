@@ -82,12 +82,10 @@ public class GraphStateMachine extends StateMachine{
 	public Object deleteVertice(Commit<DeleteVertice> commit){
 		try{
 			int id = (int)commit.operation().id();
-			for(Vertice v: grafo.vertices){
-				if(v.id == id){
-					grafo.vertices.remove(v);  
-					break;
-				}
-			}      	
+			Vertice v = findVertice(id);
+			if(v != null){
+				grafo.vertices.remove(v);
+			}  	
         	System.out.println("-- Delete Vertice");
 		} catch(Exception e){
 			return false;
@@ -118,14 +116,14 @@ public class GraphStateMachine extends StateMachine{
 
 	public Object createAresta(Commit<CreateAresta> commit){
 		try{
-		/*
-			int vertice1 = (int)commit.operation().vertice1();
-			int vertice2 = (int)commit.operation().vertice2();
-			double peso = (double)commit.operation().peso();
-			boolean direcionada = (boolean)commit.operation().direcionada();
+			int pessoa1 = (int)commit.operation().pessoa1();
+			int pessoa2 = (int)commit.operation().pessoa2();
+			double distancia = (double)commit.operation().distancia();
+			boolean direcionado = (boolean)commit.operation().direcionado();
 			String descricao = (String)commit.operation().descricao();
-			Aresta a = new Aresta(vertice1, vertice2, peso, direcionada, descricao);
-        	grafo.addToArestas(a);*/
+			Aresta a = new Aresta(pessoa1, pessoa2, distancia, direcionado, descricao);
+        	grafo.addToArestas(a);
+        	System.out.println("-- Create Aresta");
 		} catch(Exception e){
 			return false;
 		} finally {
@@ -134,14 +132,13 @@ public class GraphStateMachine extends StateMachine{
 		return true;
 	}
 
-	
-
 	public Object readAresta(Commit<ReadAresta> commit){
 		Aresta a = null;
 		try{
-			int vertice1 = (int)commit.operation().vertice1();
-			int vertice2 = (int)commit.operation().vertice2();
-			a = findAresta(vertice1, vertice2);
+			int pessoa1 = (int)commit.operation().pessoa1();
+			int pessoa2 = (int)commit.operation().pessoa2();
+			a = findAresta(pessoa1, pessoa2);
+        	System.out.println("-- Read Aresta");
 		} catch(Exception e) {
 		
 		} finally {
@@ -153,13 +150,30 @@ public class GraphStateMachine extends StateMachine{
 	public Object updateAresta(Commit<UpdateAresta> commit){
 		Aresta a = null;
 		try{
-		/*
-			int vertice1 = (int)commit.operation().vertice1();
-			int vertice2 = (int)commit.operation().vertice2();
-			a = findAresta(vertice1, vertice2);
-			a.peso = (double)commit.operation().peso();
-			a.direcionada = (boolean)commit.operation().direcionada();
-			a.descricao = (String)commit.operation().descricao();*/
+			int pessoa1 = (int)commit.operation().pessoa1();
+			int pessoa2 = (int)commit.operation().pessoa2();
+			a = findAresta(pessoa1, pessoa2);
+			a.distancia = (double)commit.operation().distancia();
+			a.direcionado = (boolean)commit.operation().direcionado();
+			a.descricao = (String)commit.operation().descricao();
+        	System.out.println("-- Update Aresta");
+		} catch(Exception e){
+			return false;
+		} finally {
+			commit.release();
+		}
+		return true;
+	}
+		
+	public Object deleteAresta(Commit<DeleteAresta> commit){
+		try{
+			int pessoa1 = (int)commit.operation().pessoa1();
+			int pessoa2 = (int)commit.operation().pessoa2();
+			Aresta a = findAresta(pessoa1, pessoa2);
+			if(a != null){
+				grafo.arestas.remove(a);
+			}  	
+        	System.out.println("-- Delete Aresta");
 		} catch(Exception e){
 			return false;
 		} finally {
@@ -185,20 +199,6 @@ public class GraphStateMachine extends StateMachine{
         }
         return null;
     }
-
-    /*public Aresta deleteArestasVertice(Commit<DeleteArestasVertice> commit){
-        for(Aresta a : (Aresta)commit.operation().arestas()){
-          	try{
-	        	
-			} catch(Exception e){
-				return false;
-			} finally {
-				commit.release();
-			}
-        }
-        return null;
-    }*/
-	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////// Vertices
@@ -313,48 +313,48 @@ class DeleteArestasFromVertice implements Command<Object>{
 /////////////////////////////////////////////////////////////////////////////////////////////////// Arestas
 
 class ReadAresta implements Query<Object>{
-	private final Object vertice1;
-	private final Object vertice2;
+	private final Object pessoa1;
+	private final Object pessoa2;
 
-	public ReadAresta(Object vertice1, Object vertice2){
-		this.vertice1 = vertice1;
-		this.vertice2 = vertice2;
+	public ReadAresta(Object pessoa1, Object pessoa2){
+		this.pessoa1 = pessoa1;
+		this.pessoa2 = pessoa2;
 	}
 	
-	public Object vertice1(){
-		return vertice1;
+	public Object pessoa1(){
+		return pessoa1;
 	}
 	
-	public Object vertice2(){
-		return vertice2;
+	public Object pessoa2(){
+		return pessoa2;
 	}
 }
 
 class CreateAresta implements Command<Object>{
-	private final Object vertice1; // required
-  	private final Object vertice2; // required
-  	private final Object peso; // required
+	private final Object pessoa1; // required
+  	private final Object pessoa2; // required
+  	private final Object distancia; // required
   	private final Object direcionado; // required
   	private final Object descricao; // required
 
-  	public CreateAresta(Object vertice1, Object vertice2, Object peso, Object direcionado, Object descricao) {
-  		this.vertice1 = vertice1;
-  		this.vertice2 = vertice2;
-  		this.peso = peso;
+  	public CreateAresta(Object pessoa1, Object pessoa2, Object distancia, Object direcionado, Object descricao) {
+  		this.pessoa1 = pessoa1;
+  		this.pessoa2 = pessoa2;
+  		this.distancia = distancia;
   		this.direcionado = direcionado;
   		this.descricao = descricao;
   	}
 
-  	public Object vertice1(){
-		return vertice1;
+  	public Object pessoa1(){
+		return pessoa1;
 	}
 	
-	public Object vertice2(){
-		return vertice2;
+	public Object pessoa2(){
+		return pessoa2;
 	}
 
-  	public Object peso(){
-		return peso;
+  	public Object distancia(){
+		return distancia;
 	}
 	
 	public Object descricao(){
@@ -368,48 +368,48 @@ class CreateAresta implements Command<Object>{
 }
 
 class DeleteAresta implements Command<Object>{
-	private final Object vertice1; // required
-  	private final Object vertice2; // required
+	private final Object pessoa1; // required
+  	private final Object pessoa2; // required
 
- 	public DeleteAresta(Object vertice1, Object vertice2) {
-  		this.vertice1 = vertice1;
-  		this.vertice2 = vertice2;
+ 	public DeleteAresta(Object pessoa1, Object pessoa2) {
+  		this.pessoa1 = pessoa1;
+  		this.pessoa2 = pessoa2;
   	}
   	 	
-  	public Object vertice1(){
-		return vertice1;
+  	public Object pessoa1(){
+		return pessoa1;
 	}
 	
-	public Object vertice2(){
-		return vertice2;
+	public Object pessoa2(){
+		return pessoa2;
 	}
 }
 
 class UpdateAresta implements Command<Object>{
-	private final Object vertice1; // required
-  	private final Object vertice2; // required
-  	private final Object peso; // required
+	private final Object pessoa1; // required
+  	private final Object pessoa2; // required
+  	private final Object distancia; // required
   	private final Object direcionado; // required
   	private final Object descricao; // required
 
-  	public UpdateAresta(Object vertice1, Object vertice2, Object peso, Object direcionado, Object descricao) {
-  		this.vertice1 = vertice1;
-  		this.vertice2 = vertice2;
-  		this.peso = peso;
+  	public UpdateAresta(Object pessoa1, Object pessoa2, Object distancia, Object direcionado, Object descricao) {
+  		this.pessoa1 = pessoa1;
+  		this.pessoa2 = pessoa2;
+  		this.distancia = distancia;
   		this.direcionado = direcionado;
   		this.descricao = descricao;
   	}
 
-  	public Object vertice1(){
-		return vertice1;
+  	public Object pessoa1(){
+		return pessoa1;
 	}
 	
-	public Object vertice2(){
-		return vertice2;
+	public Object pessoa2(){
+		return pessoa2;
 	}
 
-  	public Object peso(){
-		return peso;
+  	public Object distancia(){
+		return distancia;
 	}
 	
 	public Object descricao(){
