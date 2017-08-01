@@ -1,6 +1,5 @@
 cd ..
 
-rm logs/* # cleaning log files
-rm -rf logsCopycat* # cleaning log files
+rm -rf logs/* # cleaning log files
 
 pkill -f graphservice.

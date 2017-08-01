@@ -1,2 +1,0 @@
-===== Creating copycat server on port 5008
-===== !!! Joining cluster on port  5006

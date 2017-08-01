@@ -49,6 +49,9 @@ public class CreateReplica {
 		CopycatServer copycatServer = builder.build();
 		copycatServer.serializer().register(CreateVertice.class);
 		copycatServer.serializer().register(ReadVertice.class);
+		copycatServer.serializer().register(UpdateVertice.class);
+		copycatServer.serializer().register(DeleteVertice.class);
+		copycatServer.serializer().register(DeleteArestasFromVertice.class);
 		
    		if(firstOnCluster){ // create a new cluster
    			System.out.println("===== Creating new cluster on port " + selfPort);

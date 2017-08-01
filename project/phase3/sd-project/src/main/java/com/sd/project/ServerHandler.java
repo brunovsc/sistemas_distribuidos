@@ -95,6 +95,9 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[0] = builderCluster1.build();
 		copycatClients[0].serializer().register(CreateVertice.class);
 		copycatClients[0].serializer().register(ReadVertice.class);
+		copycatClients[0].serializer().register(UpdateVertice.class);
+		copycatClients[0].serializer().register(DeleteVertice.class);
+		copycatClients[0].serializer().register(DeleteArestasFromVertice.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 1");
 		Collection<Address> cluster1 = Arrays.asList(
@@ -111,6 +114,9 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[1] = builderCluster2.build();
 		copycatClients[1].serializer().register(CreateVertice.class);
 		copycatClients[1].serializer().register(ReadVertice.class);
+		copycatClients[1].serializer().register(UpdateVertice.class);
+		copycatClients[1].serializer().register(DeleteVertice.class);
+		copycatClients[1].serializer().register(DeleteArestasFromVertice.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 2");
 		Collection<Address> cluster2 = Arrays.asList(
@@ -127,6 +133,9 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[2] = builderCluster3.build();
 		copycatClients[2].serializer().register(CreateVertice.class);
 		copycatClients[2].serializer().register(ReadVertice.class);
+		copycatClients[2].serializer().register(UpdateVertice.class);
+		copycatClients[2].serializer().register(DeleteVertice.class);
+		copycatClients[2].serializer().register(DeleteArestasFromVertice.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 3");
 		Collection<Address> cluster3 = Arrays.asList(
@@ -258,7 +267,6 @@ public class ServerHandler implements Graph.Iface{
     
     @Override
     public boolean createVertice(int id, String nome, int idade, String cidade_atual, String contato) throws KeyAlreadyUsed, ResourceInUse, TException {
-    
         verifyResourceVertice(id);
     	int server = processRequest(id);
     	CopycatClient client = copycatClients[server];
@@ -279,44 +287,35 @@ public class ServerHandler implements Graph.Iface{
 
     @Override
     public boolean deleteVertice(int key) throws KeyNotFound, ResourceInUse, TException {
-        int server = processRequest(key);
-        if(server != selfId){
-            logForwardedRequest(server, 2);
-            boolean p = clients[server].deleteVertice(key);
-            return p;
-        }
         verifyResourceVertice(key);
+    	int server = processRequest(key);
+    	CopycatClient client = copycatClients[server];
+        logForOperation(2);        
         
-        logForOperation(2);
         
-        Vertice vertice = findVertice(grafo, key);
+        CompletableFuture<Object> future = client.submit(new ReadVertice(key));
+		Object result = future.join();
+        Vertice vertice = (Vertice)result;
         if(vertice == null){
-            unblockVertice(key);
+    	    unblockVertice(key);
             throw new KeyNotFound(key, "Vertice nao encontrado");
-        }
-        
-        ArrayList<Aresta> arestasToRemove = new ArrayList<Aresta>();
-            for(Aresta a : grafo.arestas) {
-                if(a.pessoa1 == vertice.id || a.pessoa2 == vertice.id){
-                    arestasToRemove.add(a);
-                }
-            }
-        grafo.arestas.removeAll(arestasToRemove);
-
-        for(int i = 0; i < N; i++) { // Arestas (v2, key) sao removidas nos demais servidores
-            boolean p =  false;
-            if(i != selfId){
-                p = clients[i].deleteArestasFromVertice(key);
-                if(p){
-                    System.out.println("Deleted arestas at server " + ports[i]);
-                }
+    	}
+    	
+    	for(int i = 0; i < N; i++) { 
+			CompletableFuture<Object> future1 = copycatClients[i].submit(new DeleteArestasFromVertice(key));
+			Object result1 = future1.join();
+			boolean p = (boolean)result1;
+            if(p){
+                System.out.println("Deleted arestas at cluster " + i);
             }
         }
 
-        grafo.vertices.remove(vertice);
+        CompletableFuture<Object> future2 = client.submit(new DeleteVertice(key));
+		Object result2 = future2.join();
+		boolean b = (boolean)result2;
 
         unblockVertice(key);
-        return true;
+        return b;
     }
 
 	@Override
@@ -326,7 +325,6 @@ public class ServerHandler implements Graph.Iface{
     	CopycatClient client = copycatClients[server];
         logForOperation(4);
     
-
         CompletableFuture<Object> future = client.submit(new ReadVertice(key));
 		Object result = future.join();
         Vertice vertice = (Vertice)result;
@@ -342,35 +340,25 @@ public class ServerHandler implements Graph.Iface{
 
     @Override
     public boolean updateVertice(int id, String nome, int idade, String cidade_atual, String contato) throws KeyNotFound, ResourceInUse, TException {
-    /*
-        int server = processRequest(nome);
-        if(server != selfId){
-            logForwardedRequest(server, 3);
-            boolean p = clients[server].updateVertice(nome, idade, distancia, descricao);
-            return p;
-        }
-        verifyResourceVertice(nome); 
-        
+        verifyResourceVertice(id);
+    	int server = processRequest(id);
+    	CopycatClient client = copycatClients[server];
         logForOperation(3);
+    	
+        CompletableFuture<Object> future = client.submit(new ReadVertice(id));
+		Object result = future.join();
+        Vertice vertice = (Vertice)result;
         
-        CompletableFuture<Object> future = client.submit(new UpdateVertice(nome,idade,distancia,descricao));
-        Object result = future.join();
-        Vertice vertice = (Vertice)result;     
-
-        //Vertice vertice = findVertice(grafo, nome);
-        
-
-        if(vertice == null){
-            unblockVertice(nome);
-            throw new KeyNotFound(nome, "Vertice nao encontrado");
+    	if(vertice == null){
+            unblockVertice(id);
+            throw new KeyNotFound(id, "Vertice nao encontrado");  
         }
-        // Restriction: restrição de não alteração do nome do vértice
-        //vertice.idade = idade;
-        //vertice.distancia = distancia;
-        //vertice.descricao = descricao;   
-
-        unblockVertice(nome);*/
-        return true;
+  		
+        CompletableFuture<Object> future2 = client.submit(new UpdateVertice(id, nome, idade, cidade_atual, contato));
+		Object result2 = future2.join();
+        boolean b = (boolean)result2;
+  		unblockVertice(id);
+  		return b;
     }
 
     @Override

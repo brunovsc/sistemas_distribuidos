@@ -134,6 +134,7 @@ graphservice/CreateVertice.class
 graphservice/Graph$AsyncProcessor$menorCaminho$1.class
 graphservice/Graph$Processor$listSelfArestas.class
 graphservice/BadParameter$BadParameterStandardScheme.class
+graphservice/DeleteArestasFromVertice.class
 graphservice/Graph$listSelfArestas_args$_Fields.class
 graphservice/Graph$listSelfVertices_result$listSelfVertices_resultTupleSchemeFactory.class
 graphservice/Graph$listVertices_args$listVertices_argsTupleScheme.class

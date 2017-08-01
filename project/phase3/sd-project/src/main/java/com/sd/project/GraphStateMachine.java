@@ -48,16 +48,29 @@ public class GraphStateMachine extends StateMachine{
 		return true;
 	}
 
-	public Object updateVertice(Commit<UpdateVertice> commit){
-	
+	public Object readVertice(Commit<ReadVertice> commit){
 		Vertice v = null;
 		try{
-		/*
-			int nome = (int)commit.operation().nome();
-			v = findVertice(v);
-			v.cor = (int)commit.operation().cor();
-			v.peso = (double)commit.operation().peso();
-			v.descricao = (String)commit.operation().descricao();*/
+			int id = (int)commit.operation().id();
+			v = findVertice(id);
+        	System.out.println("-- Read Vertice");
+		} catch(Exception e) {
+		
+		} finally {
+			commit.release();
+		}
+		return v;
+	}
+
+	public Object updateVertice(Commit<UpdateVertice> commit){
+		try{
+			int id = (int)commit.operation().id();
+			Vertice v = findVertice(id);
+			v.nome = (String)commit.operation().nome();
+			v.idade = (int)commit.operation().idade();
+			v.cidade_atual = (String)commit.operation().cidade_atual();
+			v.contato = (String)commit.operation().contato();
+        	System.out.println("-- Update Vertice");
 		} catch(Exception e){
 			return false;
 		} finally {
@@ -65,7 +78,43 @@ public class GraphStateMachine extends StateMachine{
 		}
 		return true;
 	}
-
+	
+	public Object deleteVertice(Commit<DeleteVertice> commit){
+		try{
+			int id = (int)commit.operation().id();
+			for(Vertice v: grafo.vertices){
+				if(v.id == id){
+					grafo.vertices.remove(v);  
+					break;
+				}
+			}      	
+        	System.out.println("-- Delete Vertice");
+		} catch(Exception e){
+			return false;
+		} finally {
+			commit.release();
+		}
+		return true;
+	}
+		
+	public Object deleteArestasFromVertice(Commit<DeleteArestasFromVertice> commit){
+		try{
+			int id = (int)commit.operation().id();
+			ArrayList<Aresta> arestasToRemove = new ArrayList<Aresta>();
+            for(Aresta a : grafo.arestas) {
+                if(a.pessoa1 == id || a.pessoa2 == id){
+                    arestasToRemove.add(a);
+                }
+            }
+        	grafo.arestas.removeAll(arestasToRemove);  
+        	System.out.println("-- Delete Arestas Vertice");	
+		} catch(Exception e){
+			return false;
+		} finally {
+			commit.release();
+		}
+		return true;
+	}
 
 	public Object createAresta(Commit<CreateAresta> commit){
 		try{
@@ -86,19 +135,6 @@ public class GraphStateMachine extends StateMachine{
 	}
 
 	
-	public Object readVertice(Commit<ReadVertice> commit){
-		Vertice v = null;
-		try{
-			int id = (int)commit.operation().id();
-			v = findVertice(id);
-        	System.out.println("-- Read Vertice");
-		} catch(Exception e) {
-		
-		} finally {
-			commit.release();
-		}
-		return v;
-	}
 
 	public Object readAresta(Commit<ReadAresta> commit){
 		Aresta a = null;
@@ -165,13 +201,13 @@ public class GraphStateMachine extends StateMachine{
 	
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////// Vertices
+
 class ReadVertice implements Query<Object>{
 	private final Object id;
-
 	public ReadVertice(Object id){
 		this.id = id;
 	}
-	
 	public Object id(){
 		return id;
 	}
@@ -213,18 +249,41 @@ class CreateVertice implements Command<Object>{
 	}
 }
 
-/*class DeleteArestasVertice implements Command<Object>{
-	private final ArrayList<Object> arestas;
-
-	public DeleteArestasVertice(ArrayList<Object> arestas) {
-		this.arestas = arestas;
+class UpdateVertice implements Command<Object>{
+	private final Object id;
+	private final Object nome;
+	private final Object idade;
+	private final Object cidade_atual;
+	private final Object contato;
+	
+	public UpdateVertice(Object id, Object nome, Object idade, Object cidade_atual, Object contato){
+		this.id = id;
+		this.nome = nome;
+		this.idade = idade;
+		this.cidade_atual = cidade_atual;
+		this.contato = contato;
 	}
-
-	public ArrayList<Object> arestas() {
-		return arestas;
+	
+	public Object id(){
+		return id;
 	}
-
-}*/
+	
+	public Object nome(){
+		return nome;
+	}
+	
+	public Object idade(){
+		return idade;
+	}
+	
+	public Object cidade_atual(){
+		return cidade_atual;
+	}
+	
+	public Object contato(){
+		return contato;
+	}
+}
 
 class DeleteVertice implements Command<Object>{
 	private final Object id;
@@ -238,35 +297,20 @@ class DeleteVertice implements Command<Object>{
 	}
 }
 
-class UpdateVertice implements Command<Object>{
-	private final Object nome;
-	private final Object cor;
-	private final Object peso;
-	private final Object descricao;
-	
-	public UpdateVertice(Object nome, Object cor, Object peso, Object descricao){
-		this.nome = nome;
-		this.cor = cor;
-		this.peso = peso;
-		this.descricao = descricao;
+class DeleteArestasFromVertice implements Command<Object>{
+	private final Object id;
+
+	public DeleteArestasFromVertice(Object id){
+		this.id = id;
 	}
 	
-	public Object nome(){
-		return nome;
-	}
-	
-	public Object cor(){
-		return cor;
-	}
-	
-	public Object peso(){
-		return peso;
-	}
-	
-	public Object descricao(){
-		return descricao;
+	public Object id(){
+		return id;
 	}
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////// Arestas
 
 class ReadAresta implements Query<Object>{
 	private final Object vertice1;
