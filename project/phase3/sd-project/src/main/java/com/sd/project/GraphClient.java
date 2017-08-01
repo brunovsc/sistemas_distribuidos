@@ -11,7 +11,7 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.protocol.TBinaryProtocol;
 
 //import view.TelaMenu;
-//import view.*;
+import view.*;
 
 public class GraphClient {
     
@@ -75,8 +75,8 @@ public class GraphClient {
 		catch(Exception e){ System.out.println(e.toString()); }
 	}catch(Exception e){}
 
-	    //new TelaLogin(client);
-            int op = -1;
+	    new TelaLogin(client);
+            /*int op = -1;
             while(op != 0){
                 op = showMenu();
                 try {
@@ -97,7 +97,7 @@ public class GraphClient {
                 transport.close();
             } catch (Exception e){
             }
-            exit(0);
+            exit(0);*/
         }
         else{
             System.out.println("\nNao foi possivel estabelecer a conexao");
