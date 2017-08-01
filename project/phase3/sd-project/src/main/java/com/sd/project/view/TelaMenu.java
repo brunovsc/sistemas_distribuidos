@@ -138,7 +138,7 @@ public class TelaMenu extends javax.swing.JFrame {
         jMenu4.setText("Pesquisar");
 
         jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/images/folder_user.png"))); // NOI18N
-        jMenuItem11.setText("Listar Vertices Aresta");
+        jMenuItem11.setText("Verificar Amizade");
         jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem11ActionPerformed(evt);
@@ -267,10 +267,10 @@ public class TelaMenu extends javax.swing.JFrame {
 
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {                                            
         
-        /*TelaListarVerticesAresta tela_listarVerticesAresta = new TelaListarVerticesAresta(); 
+        TelaConsultarAresta tela_consultarAresta = new TelaConsultarAresta(id,this.client); 
         
-        jDesktopPane1.add(tela_listarVerticesAresta);
-        tela_listarVerticesAresta.setVisible(true);*/
+        jDesktopPane1.add(tela_consultarAresta);
+        tela_consultarAresta.setVisible(true);
         
     }                                         
 
@@ -278,8 +278,8 @@ public class TelaMenu extends javax.swing.JFrame {
         
         TelaListarArestasVertice tela_listarArestasVertice = new TelaListarArestasVertice(); 
         
-        /*jDesktopPane1.add(tela_listarArestasVertice);
-        tela_listarArestasVertice.setVisible(true);*/
+        jDesktopPane1.add(tela_listarArestasVertice);
+        tela_listarArestasVertice.setVisible(true);
         
     }                                         
 

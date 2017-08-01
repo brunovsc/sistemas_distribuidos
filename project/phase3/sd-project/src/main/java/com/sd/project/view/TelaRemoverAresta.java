@@ -89,8 +89,9 @@ public class TelaRemoverAresta extends javax.swing.JInternalFrame {
 
 	try {
             this.client.deleteAresta(id,Integer.parseInt(jTextField1.getText()));
+	    this.client.deleteAresta(Integer.parseInt(jTextField1.getText()),id);
 
-            JOptionPane.showMessageDialog(null,"Amizade " + jTextField1.getText() + " removida com sucesso");
+            JOptionPane.showMessageDialog(null,"Amizade com " + jTextField1.getText() + " removida com sucesso");
 
         } catch (TException ex) {
             System.out.println(ex);
