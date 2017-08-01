@@ -98,6 +98,10 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[0].serializer().register(UpdateVertice.class);
 		copycatClients[0].serializer().register(DeleteVertice.class);
 		copycatClients[0].serializer().register(DeleteArestasFromVertice.class);
+		copycatClients[0].serializer().register(CreateAresta.class);
+		copycatClients[0].serializer().register(ReadAresta.class);
+		copycatClients[0].serializer().register(UpdateAresta.class);
+		copycatClients[0].serializer().register(DeleteAresta.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 1");
 		Collection<Address> cluster1 = Arrays.asList(
@@ -117,6 +121,10 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[1].serializer().register(UpdateVertice.class);
 		copycatClients[1].serializer().register(DeleteVertice.class);
 		copycatClients[1].serializer().register(DeleteArestasFromVertice.class);
+		copycatClients[1].serializer().register(CreateAresta.class);
+		copycatClients[1].serializer().register(ReadAresta.class);
+		copycatClients[1].serializer().register(UpdateAresta.class);
+		copycatClients[1].serializer().register(DeleteAresta.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 2");
 		Collection<Address> cluster2 = Arrays.asList(
@@ -136,6 +144,10 @@ public class ServerHandler implements Graph.Iface{
 		copycatClients[2].serializer().register(UpdateVertice.class);
 		copycatClients[2].serializer().register(DeleteVertice.class);
 		copycatClients[2].serializer().register(DeleteArestasFromVertice.class);
+		copycatClients[2].serializer().register(CreateAresta.class);
+		copycatClients[2].serializer().register(ReadAresta.class);
+		copycatClients[2].serializer().register(UpdateAresta.class);
+		copycatClients[2].serializer().register(DeleteAresta.class);
 		
    		System.out.println("===== Connecting Server Handler to Cluster 3");
 		Collection<Address> cluster3 = Arrays.asList(
@@ -248,7 +260,7 @@ public class ServerHandler implements Graph.Iface{
         }
     }
     
-    public Vertice findVertice(Grafo grafo, int vertice){
+    public Vertice findVertice(int vertice){
     	int server = processRequest(vertice);
         CompletableFuture<Object> future = copycatClients[server].submit(new ReadVertice(vertice));
 		Object result = future.join();
@@ -256,46 +268,44 @@ public class ServerHandler implements Graph.Iface{
         return v;
     }
     
-    public Aresta findAresta(Grafo grafo, int pessoa1, int pessoa2){
-        for(Aresta a : grafo.arestas){
-            if((a.pessoa1 == pessoa1 && a.pessoa2 == pessoa2) || (a.pessoa1 == pessoa2 && a.pessoa2 == pessoa1)){
-               return a;
-            }
-        }
-        return null;
+    public Aresta findAresta(int pessoa1, int pessoa2){
+    	int server = processRequest(pessoa1);
+        CompletableFuture<Object> future = copycatClients[server].submit(new ReadAresta(pessoa1, pessoa2));
+		Object result = future.join();
+        Aresta a = (Aresta)result;
+        return a;
     }
     
     @Override
     public boolean createVertice(int id, String nome, int idade, String cidade_atual, String contato) throws KeyAlreadyUsed, ResourceInUse, TException {
+        logForOperation(1);
         verifyResourceVertice(id);
+        
     	int server = processRequest(id);
     	CopycatClient client = copycatClients[server];
-        logForOperation(1);
-    	
-        CompletableFuture<Object> future = client.submit(new ReadVertice(id));
-		Object result = future.join();
-        Vertice vertice = (Vertice)result;
+        Vertice vertice = findVertice(id);
         
     	if(vertice != null){
     	    unblockVertice(id);
             throw new KeyAlreadyUsed(id, "Vertice ja existente");  
     	}
-  		client.submit(new CreateVertice(id, nome, idade, cidade_atual, contato)).thenAccept(result2 -> {});
+    	
+        CompletableFuture<Object> future2 = client.submit(new CreateVertice(id, nome, idade, cidade_atual, contato));
+		Object result2 = future2.join();
+		boolean b = (boolean)result2;
+		
   		unblockVertice(id);
-  		return true;
+  		return b;
     }
 
     @Override
     public boolean deleteVertice(int key) throws KeyNotFound, ResourceInUse, TException {
+        logForOperation(2);        
         verifyResourceVertice(key);
     	int server = processRequest(key);
     	CopycatClient client = copycatClients[server];
-        logForOperation(2);        
         
-        
-        CompletableFuture<Object> future = client.submit(new ReadVertice(key));
-		Object result = future.join();
-        Vertice vertice = (Vertice)result;
+        Vertice vertice = findVertice(key);
         if(vertice == null){
     	    unblockVertice(key);
             throw new KeyNotFound(key, "Vertice nao encontrado");
@@ -320,14 +330,12 @@ public class ServerHandler implements Graph.Iface{
 
 	@Override
     public Vertice readVertice(int key) throws KeyNotFound, ResourceInUse, TException {
+        logForOperation(4);
     	verifyResourceVertice(key);
     	int server = processRequest(key);
     	CopycatClient client = copycatClients[server];
-        logForOperation(4);
     
-        CompletableFuture<Object> future = client.submit(new ReadVertice(key));
-		Object result = future.join();
-        Vertice vertice = (Vertice)result;
+        Vertice vertice = findVertice(key);
 		
         if(vertice == null){
             unblockVertice(key);
@@ -340,14 +348,12 @@ public class ServerHandler implements Graph.Iface{
 
     @Override
     public boolean updateVertice(int id, String nome, int idade, String cidade_atual, String contato) throws KeyNotFound, ResourceInUse, TException {
+        logForOperation(3);
         verifyResourceVertice(id);
     	int server = processRequest(id);
     	CopycatClient client = copycatClients[server];
-        logForOperation(3);
     	
-        CompletableFuture<Object> future = client.submit(new ReadVertice(id));
-		Object result = future.join();
-        Vertice vertice = (Vertice)result;
+        Vertice vertice = findVertice(id);
         
     	if(vertice == null){
             unblockVertice(id);
@@ -363,47 +369,37 @@ public class ServerHandler implements Graph.Iface{
 
     @Override
     public boolean createAresta(int pessoa1, int pessoa2, double distancia, boolean direcionado, String descricao) throws KeyAlreadyUsed, ResourceInUse, KeyNotFound, BadParameter, TException {
-    /*
+        logForOperation(5);
     	if(pessoa1 == pessoa2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
-        int server = processRequest(pessoa1);
-        if(server != selfId){
-            logForwardedRequest(server, 5);
-            boolean p = clients[server].createAresta(pessoa1, pessoa2, distancia, direcionado, descricao);
-            return p;
-        }
-        
-        Vertice v2 = null;
-        try{
-            v2 = readVertice(pessoa2);
-        } catch(ResourceInUse e){
-            throw e;
-        } catch(KeyNotFound e){
-            throw e;
-        } catch(TException e){
-            throw e;
-        }
-        // Vertice 2 existe
         verifyResourceAresta(pessoa1, pessoa2);
         
-        logForOperation(5);
-        // Restriction: restrição de criar aresta se ambos os vértices já existirem no grafo
-        if(findVertice(grafo, pessoa1) == null){
-            unblockAresta(pessoa1, pessoa2);
+        Vertice v1 = findVertice(pessoa1);
+        if(v1 == null){
+        	unblockAresta(pessoa1, pessoa2);
             throw new KeyNotFound(pessoa1, "Vertice nao encontrado");
-        }
+    	}
+    	Vertice v2 = findVertice(pessoa2);
+    	if(v2 == null){
+        	unblockAresta(pessoa1, pessoa2);
+            throw new KeyNotFound(pessoa2, "Vertice nao encontrado");
+    	}
+    	
+    	int server = processRequest(pessoa1);
+        CopycatClient client = copycatClients[server];
         
-        Aresta aresta = findAresta(grafo, pessoa1, pessoa2);
+        // Restriction: restrição de criar aresta se ambos os vértices já existirem no grafo
+        
+        Aresta aresta = findAresta(pessoa1, pessoa2);
         
         if(aresta == null){
-            boolean op = false;
-            client.submit(new CreateAresta(pessoa1, pessoa2, distancia, direcionado, descricao)).thenAccept(result -> {
-                //op = (boolean)result;
-            });
-            //grafo.arestas.add(new Aresta(pessoa1, pessoa2, distancia, direcionado, descricao));
+        	
+		    CompletableFuture<Object> future2 = client.submit(new CreateAresta(pessoa1, pessoa2, distancia, direcionado, descricao));
+			Object result2 = future2.join();
+			boolean b = (boolean)result2;
             unblockAresta(pessoa1, pessoa2);
-            return true;
+            return b;
         }
         // Aresta já existe, tratar bidirecionalidade
         if(!aresta.direcionado){ // aresta já é bidirecional
@@ -417,107 +413,89 @@ public class ServerHandler implements Graph.Iface{
         else{ // direcionada de v2 pra v1
             unblockAresta(pessoa1, pessoa2);
             throw new KeyAlreadyUsed(0, "Aresta direcionada ja existente do vertice 2 para o vertice 1");     
-        }*/
-        return true;
+        }
+        //return true;
     }
 
     @Override
     public boolean deleteAresta(int pessoa1, int pessoa2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
-    /*
+    	
+        logForOperation(6);
         if(pessoa1 == pessoa2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
+        verifyResourceAresta(pessoa1, pessoa2);      
         int server = processRequest(pessoa1);
-        if(server != selfId){
-            logForwardedRequest(server, 6);
-            boolean p = clients[server].deleteAresta(pessoa1, pessoa2);
-            return p;
-        }
-        verifyResourceAresta(pessoa1, pessoa2);        
+    	CopycatClient client = copycatClients[server];  
         
-        logForOperation(6);
-        //Aresta aresta = findAresta(grafo, pessoa1, pessoa2);
-        
-        CompletableFuture<Object> future = client.submit(new DeleteAresta(pessoa1, pessoa2));
-        Object result = future.join();
-        Aresta aresta = (Aresta)result;
-
+        Aresta aresta = findAresta(pessoa1, pessoa2);        
         if(aresta == null){
             unblockAresta(pessoa1, pessoa2);
             throw new KeyNotFound(0, "Aresta nao encontrada");
         }
-        //grafo.arestas.remove(aresta);
-        unblockAresta(pessoa1, pessoa2);*/
-        return true;        
+        
+        CompletableFuture<Object> future = client.submit(new DeleteAresta(pessoa1, pessoa2));
+        Object result = future.join();
+        boolean b = (boolean)result;
+
+
+        unblockAresta(pessoa1, pessoa2);
+        return b;        
     }
 
     @Override
     public Aresta readAresta(int pessoa1, int pessoa2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
-    /*
+        logForOperation(8);
     	if(pessoa1 == pessoa2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
-        int server = processRequest(pessoa1);
-        if(server != selfId){
-            logForwardedRequest(server, 8);
-            Aresta p = clients[server].readAresta(pessoa1, pessoa2);
-            return p;
-        }
         verifyResourceAresta(pessoa1, pessoa2);
-        
-        logForOperation(8);
-        
+    	int server = processRequest(pessoa1);
+    	CopycatClient client = copycatClients[server];
+    
         CompletableFuture<Object> future = client.submit(new ReadAresta(pessoa1, pessoa2));
-        Object result = future.join();
+		Object result = future.join();
         Aresta aresta = (Aresta)result;
-
-        //Aresta aresta = findAresta(grafo, pessoa1, pessoa2);
-        
-        if(aresta == null){
+		
+		if(aresta == null){
             unblockAresta(pessoa1, pessoa2);
             throw new KeyNotFound(0, "Aresta nao encontrada");            
         }
         unblockAresta(pessoa1, pessoa2);
-        return aresta;*/
-        return null;
+        return aresta;
     }
 
     @Override
     public boolean updateAresta(int pessoa1, int pessoa2, double distancia, boolean direcionado, String descricao) throws KeyNotFound, ResourceInUse, BadParameter, TException {
-    /*
+    
+        logForOperation(7);
+        
     	if(pessoa1 == pessoa2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
-        int server = processRequest(pessoa1);
-        if(server != selfId){
-            logForwardedRequest(server, 7);
-            boolean p = clients[server].updateAresta(pessoa1, pessoa2, distancia, direcionado, descricao);
-            return p;
-        }
         verifyResourceAresta(pessoa1, pessoa2);
+        int server = processRequest(pessoa1);
+
         
-        logForOperation(7);
+    	CopycatClient client = copycatClients[server];
+    
+        Aresta aresta = findAresta(pessoa1, pessoa2);
+		
+		if(aresta == null){
+            unblockAresta(pessoa1, pessoa2);
+            throw new KeyNotFound(0, "Aresta nao encontrada");            
+        }
         
         CompletableFuture<Object> future = client.submit(new UpdateAresta(pessoa1, pessoa2, distancia, direcionado,descricao));
         Object result = future.join();
-        Aresta aresta = (Aresta)result;
-
-        //Aresta aresta = findAresta(grafo, pessoa1, pessoa2);
-        
-        if(aresta == null){
-            unblockAresta(pessoa1, pessoa2);
-            throw new KeyNotFound(0, "Aresta nao encontrada");  
-        }
-        // Restriction: aresta não tem seus vertices alterados
-        //aresta.distancia = distancia;
-        //aresta.direcionado = direcionado;
-        //aresta.descricao = descricao;
-		unblockAresta(pessoa1, pessoa2);*/
-        return true;        
+        boolean b = (boolean)result;
+		unblockAresta(pessoa1, pessoa2);
+        return b;        
     }
     
     @Override
     public List<Vertice> listVerticesFromAresta(int pessoa1, int pessoa2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
+    /*
     	if(pessoa1 == pessoa2){
     		throw new BadParameter("Arestas with format (k, k) are not allowed.");
     	}
@@ -545,11 +523,13 @@ public class ServerHandler implements Graph.Iface{
         vertices.add(v1);
         vertices.add(v2);
         unblockAresta(pessoa1, pessoa2);
-        return vertices; 
+        return vertices; */
+        return null;
     }
 
     @Override
     public List<Aresta> listArestasFromVertice(int nome) throws KeyNotFound, ResourceInUse, TException {
+    /*
         verifyResourceVertice(nome);
         logForOperation(10);
         Grafo fullGraph = getFullGraph();
@@ -566,11 +546,13 @@ public class ServerHandler implements Graph.Iface{
             }
         }
         unblockVertice(nome);
-        return arestas;
+        return arestas;*/
+        return null;
     }
 
     @Override
     public List<Vertice> listNeighbors(int nome) throws KeyNotFound, ResourceInUse, TException {
+    /*
         verifyResourceVertice(nome);
         logForOperation(11);
         Grafo fullGraph = getFullGraph();
@@ -599,11 +581,13 @@ public class ServerHandler implements Graph.Iface{
             }
         }
         unblockVertice(nome);
-        return vertices;
+        return vertices;*/
+        return null;
     }
 
     @Override
     public List<Vertice> listVertices(){
+    /*
         logForOperation(12);
         ArrayList<Vertice> allVertices = new ArrayList<Vertice>();
         for(int i = 0; i < N; i++){
@@ -619,21 +603,23 @@ public class ServerHandler implements Graph.Iface{
             	allVertices.addAll(grafo.vertices);
             }
         }
-        return allVertices;
+        return allVertices;*/
+        return null;
     }
     
     @Override
     public List<Vertice> listSelfVertices(){
+    /*
         logForOperation(14);
         if(grafo.isSetVertices()){
             return grafo.vertices;
-        }
+        }*/
         return null;
     }
     
     @Override
     public List<Aresta> listArestas(){
-        logForOperation(13);
+        /*logForOperation(13);
         ArrayList<Aresta> allArestas = new ArrayList<Aresta>();
         for(int i = 0; i < N; i++){
             if(i != selfId){
@@ -648,20 +634,22 @@ public class ServerHandler implements Graph.Iface{
        			allArestas.addAll(grafo.arestas);
             }
         }
-        return allArestas;  
+        return allArestas;  */
+        return null;
     }
 
     @Override
     public List<Aresta> listSelfArestas() throws TException {
-        logForOperation(15);
+      /*  logForOperation(15);
         if(grafo.isSetArestas()){
             return grafo.arestas;
-        }
+        }*/
         return null;
     }
 
     @Override
     public List<Vertice> menorCaminho(int pessoa1, int pessoa2) throws KeyNotFound, ResourceInUse, BadParameter, TException {
+    /*
     	if(pessoa1 == pessoa2){
     		throw new BadParameter("Cannot calculate path from k to k.");
     	}
@@ -682,7 +670,8 @@ public class ServerHandler implements Graph.Iface{
         algoritmo.executa(v); 
 
         LinkedList<Vertice> caminho = algoritmo.getCaminho(destino);
-        return caminho;
+        return caminho;*/
+        return null;
     }
     
     
@@ -736,6 +725,7 @@ public class ServerHandler implements Graph.Iface{
 
     @Override
     public boolean deleteArestasFromVertice(int key) throws KeyNotFound, ResourceInUse, TException {
+    /*
         verifyResourceVertice(key);
         logForOperation(17);
         System.out.print("Removing local arestas of vertice " + key);
@@ -746,7 +736,7 @@ public class ServerHandler implements Graph.Iface{
             }
         }
 		grafo.arestas.removeAll(arestasToRemove);
-		unblockVertice(key);
+		unblockVertice(key);*/
         return true;
     }
     
